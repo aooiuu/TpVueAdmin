@@ -1,0 +1,21 @@
+POST http://admin5.test/admin/admin/add
+Content-Type: application/json
+
+{
+  "username": "qqqqqqqq",
+  "password": "aaa",
+  "nickname": "aaa"
+}
+
+###
+
+POST http://admin5.test/admin/admin/del
+Content-Type: application/json
+
+{
+  "id": 1
+}
+
+###
+
+POST http://admin5.test/admin/admin/index
