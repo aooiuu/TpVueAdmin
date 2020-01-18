@@ -42,7 +42,7 @@
 
 <script>
 import Add from './add'
-
+import { confirm } from '@/utils/messageBox'
 export default {
   components: {
     Add
@@ -70,25 +70,8 @@ export default {
     this.refresh()
   },
   methods: {
-    async confirm(title) {
-      let result = false
-      try {
-        await this.$confirm(title, '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        })
-        result = true
-      } catch (error) {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        })
-      }
-      return result
-    },
     async del(item) {
-      if (await this.confirm('此操作将删除此信息, 是否继续?')) {
+      if (await confirm('此操作将删除此信息, 是否继续?')) {
         try {
           const { code, msg } = await this.$request({
             url: 'admin/rule/del',
