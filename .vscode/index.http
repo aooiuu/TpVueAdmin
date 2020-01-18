@@ -1,0 +1,14 @@
+### login
+POST  http://admin5.test/admin/index/login
+Content-Type: application/json
+
+{
+  "username": "username",
+  "password": "password"
+}
+
+### logout
+POST  http://admin5.test/admin/index/logout
+
+### userinfo
+POST  http://admin5.test/admin/index/userinfo

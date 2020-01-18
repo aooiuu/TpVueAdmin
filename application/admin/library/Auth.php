@@ -2,10 +2,14 @@
 
 namespace app\admin\library;
 
+use app\common\model\Admin;
 use think\Request;
+use think\Session;
 
 class Auth extends \fast\Auth
 {
+    // 是否登录
+    protected $logined = false;
     protected $config = [
         'auth_on' => 1, // 权限开关
         'auth_type' => 1, // 认证方式，1为实时认证；2为登录认证。
@@ -20,13 +24,48 @@ class Auth extends \fast\Auth
         parent::__construct();
     }
 
-    public function check($name, $uid = '', $relation = 'or', $mode = 'url')
+    public function __get($name)
     {
-        if (!$uid) {
+        return Session::get('admin.' . $name);
+    }
+
+    public function login($admin)
+    {
+        Session::set("admin", $admin->toArray());
+        $this->logined = true;
+    }
+
+    public function logout()
+    {
+        Session::clear();
+        $this->logined = false;
+    }
+
+    public function isLogin()
+    {
+        if ($this->logined) {
+            return true;
+        }
+        $admin = Session::get('admin');
+        if (!$admin) {
             return false;
         }
+        $this->logined = true;
+        return true;
+    }
+
+    public function getUserInfo($uid = null)
+    {
+        $uid = is_null($uid) ? $this->id : $uid;
+        return $uid != $this->id ? Admin::get(intval($uid)) : Session::get('admin');
+    }
+
+    public function check($name, $uid = '', $relation = 'or', $mode = 'url')
+    {
+        $uid = $uid ? $uid : $this->id;
         return parent::check($name, $uid, $relation, $mode);
     }
+
     /**
      * 检测当前控制器和方法是否匹配传递的数组
      *

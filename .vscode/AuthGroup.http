@@ -1,0 +1,30 @@
+@url = http://admin5.test/admin/auth_group
+
+### index
+POST  {{url}}/index
+
+### edit
+POST  {{url}}/edit
+
+### add
+POST  {{url}}/add
+Content-Type: application/json
+
+{
+  "type": "menu",
+  "pid": 0,
+  "name": "admin/rule",
+  "title": "admin/rule"
+}
+
+### del
+POST  {{url}}/del
+
+### roletree
+POST  {{url}}/roletree
+Content-Type: application/json
+
+{
+  "id": 6
+}
+

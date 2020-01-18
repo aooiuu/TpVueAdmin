@@ -40,6 +40,8 @@ class Admin extends Base
 
     public function index()
     {
+        list($where, $sort, $order, $offset, $limit) = $this->buildparams();
+        // total
         return $this->result($this->model->select(), 0);
 
     }
