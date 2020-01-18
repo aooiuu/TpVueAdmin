@@ -189,3 +189,11 @@ aside {
 .multiselect--active {
   z-index: 1000 !important;
 }
+
+// 表格的按钮
+.btn-icon {
+  padding: 5px;
+}
+.btn-icon+.btn-icon {
+  margin-left: 3px;
+}
