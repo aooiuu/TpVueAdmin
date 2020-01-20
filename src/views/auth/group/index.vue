@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <!-- 弹窗 -->
-    <Add :show="Add.show" title="添加" @hide="Add.show = false" />
+    <Add :show="Add.show" title="添加" :list="table.data" @hide="Add.show = false" />
     <Edit :show="Edit.show" title="编辑" :item="item" @hide="Edit.show = false" />
     <!-- 工具栏 -->
     <div class="filter-container">

@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <!-- 弹窗 -->
-    <Add :show="Add.show" title="添加" @hide="Add.show = false" />
+    <Add :show="Add.show" title="添加" :list="table.data" @hide="Add.show = false" />
     <!-- 工具栏 -->
     <div class="filter-container">
       <el-button class="filter-item" size="small" @click="refresh">刷新</el-button>
@@ -22,6 +22,7 @@
     <!-- 表格 -->
     <el-table v-loading="table.loding" stripe :data="table.data" style="width: 100%" border fit highlight-current-row size="small">
       <el-table-column prop="id" label="ID" align="center" width="60" />
+      <el-table-column prop="pid" label="父级" align="center" width="60" />
       <el-table-column prop="title" label="标题" align="center" />
       <el-table-column prop="name" label="规则" align="center" />
       <el-table-column prop="weigh" label="权重" align="center" />

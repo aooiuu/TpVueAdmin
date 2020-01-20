@@ -1,11 +1,20 @@
 <template>
   <el-dialog :visible.sync="showEx" :title="title" :close-on-click-modal="false">
     <el-form :model="form.data" label-position="left" label-width="70px" size="small">
-      <el-form-item label="规则">
-        <el-input v-model="form.data.name" placeholder="目录名/控制器名/方法名" />
+      <el-form-item label="父级">
+        <el-cascader
+          v-model="form.pid.value"
+          :options="form.pid.options"
+          size="small"
+          style="width: 100%;"
+          @change="pidOnChange"
+        />
       </el-form-item>
       <el-form-item label="标题">
         <el-input v-model="form.data.title" />
+      </el-form-item>
+      <el-form-item label="规则">
+        <el-input v-model="form.data.name" placeholder="目录名/控制器名/方法名" />
       </el-form-item>
       <el-form-item label="权重">
         <el-input v-model="form.data.weigh" />
@@ -30,6 +39,8 @@
 </template>
 
 <script>
+import { buildRulePidTree } from '@/views/auth/utils'
+
 export default {
   props: {
     show: {
@@ -39,6 +50,10 @@ export default {
     title: {
       type: String,
       default: '编辑'
+    },
+    list: {
+      type: Array,
+      default: () => []
     }
   },
   data() {
@@ -53,9 +68,12 @@ export default {
           status: true,
           remark: '',
           type: 'menu'
+        },
+        pid: {
+          options: [],
+          value: [0]
         }
-      },
-      treeData: []
+      }
     }
   },
   computed: {
@@ -66,7 +84,25 @@ export default {
       }
     }
   },
+  watch: {
+    show(value) {
+      if (!value) {
+        return
+      }
+      this.form.pid.options = buildRulePidTree(this.list)
+      this.form.pid.value = [0]
+    }
+  },
+  mounted() {
+    console.log('this.list:', this.list)
+  },
   methods: {
+    pidOnChange(value) {
+      this.form.pid.value = value
+      this.form.data.pid = this.form.pid.value[this.form.pid.value.length - 1]
+      console.log('this.form:', this.form)
+      console.log('this.form.pid.value:', this.form.pid.value)
+    },
     async save() {
       try {
         const { code, msg } = await this.$request({

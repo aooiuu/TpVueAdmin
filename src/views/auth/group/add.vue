@@ -1,20 +1,27 @@
 <template>
   <el-dialog :visible.sync="showEx" :title="title" :close-on-click-modal="false">
     <el-form :model="form.data" label-position="left" label-width="70px" size="small">
-      <el-form-item label="规则">
-        <el-input v-model="form.data.name" placeholder="目录名/控制器名/方法名" />
+      <el-form-item label="父级">
+        <el-cascader
+          v-model="form.pid.value"
+          :options="form.pid.options"
+          size="small"
+          style="width: 100%;"
+          @change="pidOnChange"
+        />
       </el-form-item>
-      <el-form-item label="标题">
-        <el-input v-model="form.data.title" />
+      <el-form-item label="分组名">
+        <el-input v-model="form.data.name" />
       </el-form-item>
-      <el-form-item label="权重">
-        <el-input v-model="form.data.weigh" />
-      </el-form-item>
-      <el-form-item label="备注">
-        <el-input v-model="form.data.remark" />
-      </el-form-item>
-      <el-form-item label="状态">
-        <el-switch v-model="form.data.status" />
+      <el-form-item label="权限">
+        <el-tree
+          ref="treeX"
+          :data="tree.data"
+          show-checkbox
+          node-key="id"
+          default-expand-all
+          style="max-height: 300px; overflow: auto; margin-top: 5px;"
+        />
       </el-form-item>
     </el-form>
     <!-- footer -->
@@ -30,61 +37,6 @@
 </template>
 
 <script>
-export default {
-  props: {
-    show: {
-      type: Boolean,
-      default: false
-    },
-    title: {
-      type: String,
-      default: '编辑'
-    }
-  },
-  data() {
-    return {
-      treeIsexpand: false,
-      form: {
-        data: {
-          pid: 0,
-          name: 'a',
-          title: 'v',
-          weigh: 0,
-          status: true,
-          remark: '',
-          type: 'menu'
-        }
-      },
-      treeData: []
-    }
-  },
-  computed: {
-    showEx: {
-      get() { return this.show },
-      set(value) {
-        this.$emit('hide')
-      }
-    }
-  },
-  methods: {
-    async save() {
-      try {
-        const { code, msg } = await this.$request({
-          url: 'admin/rule/add',
-          method: 'POST',
-          data: this.form.data
-        })
-        this.$message({
-          type: code !== 0 ? 'error' : 'success',
-          message: msg
-        })
-      } catch (error) {
-        console.warn(error)
-      }
-    }
-  }
-}
+export { default } from './add.js'
 </script>
 
-<style>
-</style>

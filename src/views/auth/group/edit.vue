@@ -4,14 +4,16 @@
       <el-form-item label="名称">
         <el-input v-model="form.data.name" />
       </el-form-item>
-      <el-form-item label="权限" style="max-height: 300px; overflow: auto;">
+      <el-form-item label="权限">
+        <span>选中全部</span>
+        <el-checkbox v-model="tree.checkAll" @change="treeOnChange" />
         <el-tree
           ref="treeX"
           :data="tree.data"
           show-checkbox
           node-key="id"
-          :default-expanded-keys="[2, 3]"
-          :default-checked-keys="[5]"
+          default-expand-all
+          style="max-height: 300px; overflow: auto; margin-top: 5px;"
         />
       </el-form-item>
     </el-form>
@@ -28,99 +30,5 @@
 </template>
 
 <script>
-export default {
-  props: {
-    show: {
-      type: Boolean,
-      default: false
-    },
-    title: {
-      type: String,
-      default: '编辑'
-    },
-    item: {
-      type: Object,
-      default: () => {}
-    }
-  },
-  data() {
-    return {
-      treeIsexpand: false,
-      form: {
-        data: {
-          pid: 0,
-          name: 'a',
-          title: 'v',
-          weigh: 0,
-          status: true,
-          remark: '',
-          type: 'menu'
-        }
-      },
-      tree: {
-        data: []
-      }
-    }
-  },
-  computed: {
-    showEx: {
-      get() { return this.show },
-      set(value) {
-        this.$emit('hide')
-      }
-    }
-  },
-  watch: {
-    show(value) {
-      value && this.getRoletree()
-    }
-  },
-  methods: {
-    async getRoletree() {
-      console.log('getRoletree', this.item)
-      try {
-        const { code, msg, data } = await this.$request({
-          url: 'admin/auth_group/roletree',
-          method: 'GET',
-          params: {
-            id: this.item.id
-          }
-        })
-        this.$message({
-          type: code !== 0 ? 'error' : 'success',
-          message: msg
-        })
-        if (code === 0) {
-          this.buildTree(data)
-        }
-      } catch (error) {
-        console.warn(error)
-      }
-    },
-    buildTree(data) {
-      this.tree.data = data.map(item => ({
-        label: item.title
-      }))
-    },
-    async save() {
-      console.log('getRoletree', this.item)
-      // try {
-      //   const { code, msg } = await this.$request({
-      //     url: 'admin/rule/add',
-      //     method: 'POST',
-      //     data: this.form.data
-      //   })
-      //   this.$message({
-      //     type: code !== 0 ? 'error' : 'success',
-      //     message: msg
-      //   })
-      // } catch (error) {
-      //   console.warn(error)
-      // }
-    }
-  }
-}
+export { default } from './edit.js'
 </script>
-
-<style>
-</style>
