@@ -23,9 +23,9 @@ class Base extends Controller
          */
         $this->auth = Auth::instance();
         $modulename = $this->request->module();
-        $controllername = Loader::parseName($this->request->controller());
         $actionname = strtolower($this->request->action());
-        $path = str_replace('.', '/', $controllername) . '/' . $actionname;
+        $controllername = Loader::parseName($this->request->controller());
+        $path = str_replace('.', '/', $modulename) . '/' . str_replace('.', '/', $controllername) . '/' . $actionname;
 
         // 设置当前请求的URI
         $this->auth->setRequestUri($path);
