@@ -10,4 +10,10 @@ class Admin extends Base
     protected $createTime = 'createtime';
     protected $updateTime = 'updatetime';
 
+    // 关联角色组绑定表, 一对多
+    public function authGroupAccess()
+    {
+        return $this->hasMany('AuthGroupAccess', 'uid');
+    }
+
 }

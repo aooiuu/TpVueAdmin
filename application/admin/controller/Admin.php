@@ -9,11 +9,25 @@ class Admin extends Base
      * @var \app\common\model\Admin
      */
     protected $model = null;
-    protected $noNeedRight = ['add'];
+    protected $noNeedRight = [];
     public function _initialize()
     {
+        parent::_initialize();
         $this->model = model('Admin');
     }
+
+    public function index()
+    {
+        $authGroup = model('AuthGroup')->column('name', 'id');
+        $authGroupAccess = $this->model->with('authGroupAccess')->select();
+        $result = [
+            'total' => $this->model->count(),
+            'rows' => $authGroupAccess,
+        ];
+
+        return $this->result($result, 0);
+    }
+
     /**
      * 添加管理员
      * @param string username
@@ -35,14 +49,6 @@ class Admin extends Base
     {
         $id = $this->request->param('id');
         $result = $this->model->where('id', '>', $id)->delete();
-
-    }
-
-    public function index()
-    {
-        list($where, $sort, $order, $offset, $limit) = $this->buildparams();
-        // total
-        return $this->result($this->model->select(), 0);
 
     }
 }

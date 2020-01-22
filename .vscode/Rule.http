@@ -24,3 +24,7 @@ Content-Type: application/json
 {
   "id": 109
 }
+
+### asyncRoutes
+POST  {{url}}/asyncRoutes
+Content-Type: application/json

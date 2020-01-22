@@ -1,3 +1,8 @@
+### index
+POST http://admin5.test/admin/admin/index
+
+### add
+
 POST http://admin5.test/admin/admin/add
 Content-Type: application/json
 
@@ -7,7 +12,7 @@ Content-Type: application/json
   "nickname": "aaa"
 }
 
-###
+### del
 
 POST http://admin5.test/admin/admin/del
 Content-Type: application/json
@@ -15,7 +20,3 @@ Content-Type: application/json
 {
   "id": 1
 }
-
-###
-
-POST http://admin5.test/admin/admin/index

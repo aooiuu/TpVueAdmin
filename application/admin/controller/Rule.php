@@ -8,6 +8,8 @@ class Rule extends Base
      * @var \app\common\model\AuthRule
      */
     protected $model = null;
+    protected $noNeedRight = ['asyncRoutes'];
+
     public function _initialize()
     {
         parent::_initialize();
@@ -36,6 +38,18 @@ class Rule extends Base
 
     public function edit()
     {
+        $params = $this->request->param();
+        if (empty($params['id'])) {
+            $this->result([], 2, '操作失败：缺少参数');
+        }
+        $model = $this->model->get($params['id']);
+        unset($params['id']);
+        $result = $model->isUpdate()->save($params);
+        if ($result || $result === 0) {
+            $this->result([], 0, '操作成功');
+        } else {
+            $this->result([], 2, '操作失败：' . $model->getError());
+        }
     }
 
     public function del()
@@ -46,5 +60,24 @@ class Rule extends Base
         }
         $this->model->destroy($id);
         $this->result([], 0, '操作成功');
+    }
+
+    public function asyncRoutes()
+    {
+        $model = $this->model->where(['ismenu' => 1, 'id' => ['in', $this->auth->getRuleIds()]])->select();
+        $result = [];
+        foreach ($model as $k => $v) {
+            if (!$v['ismenu']) {
+                continue;
+            }
+            $v['path'] = $v['name'];
+            $v['name'] = $v['name'];
+            $v['component'] = $v['name'];
+            $v['meta'] = [
+                'title' => $v['title'],
+            ];
+            $result[] = $v;
+        }
+        $this->result($result, 0, 'success');
     }
 }

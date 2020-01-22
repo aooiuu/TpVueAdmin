@@ -7,6 +7,15 @@ Content-Type: application/json
   "password": "password"
 }
 
+### login
+POST  http://admin5.test/admin/index/login
+Content-Type: application/json
+
+{
+  "username": "user1",
+  "password": "user1user1"
+}
+
 ### logout
 POST  http://admin5.test/admin/index/logout
 

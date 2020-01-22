@@ -1,5 +1,6 @@
 @url = http://admin5.test/admin/auth_group
 
+
 ### index
 POST  {{url}}/index
 
@@ -11,10 +12,9 @@ POST  {{url}}/add
 Content-Type: application/json
 
 {
-  "type": "menu",
-  "pid": 0,
-  "name": "admin/rule",
-  "title": "admin/rule"
+  "pid":7,
+  "name":"ddd",
+  "rules":[133,134,135,136,137,138]
 }
 
 ### del

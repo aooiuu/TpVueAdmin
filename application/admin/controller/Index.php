@@ -11,6 +11,12 @@ class Index extends Base
     // 不需要鉴权的方法
     protected $noNeedRight = ['login', 'logout'];
 
+    public function _initialize()
+    {
+        parent::_initialize();
+        $this->model = model('admin');
+    }
+
     public function index()
     {
         return 'index';
@@ -40,6 +46,7 @@ class Index extends Base
         if ($admin->password != $password) {
             $this->result([], 2, '密码错误');
         }
+        $admin->accesstoken = 'accesstoken';
         $this->auth->login($admin);
         $this->result($this->auth->getUserInfo(), 0, '登录成功');
     }

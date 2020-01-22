@@ -29,11 +29,14 @@ class AuthGroup extends Base
     public function add()
     {
         $params = $this->request->param();
-        $result = $this->model->validate()->save($params);
+        if ($params['rules']) {
+            $params['rules'] = implode(',', $params['rules']);
+        }
+        $result = $this->model->validate('AuthGroup.add')->save($params);
         if ($result) {
             $this->result([], 0, '操作成功');
         } else {
-            $this->result([], 2, '操作失败');
+            $this->result([], 2, '操作失败:' . $this->model->getError());
         }
     }
 
@@ -73,6 +76,20 @@ class AuthGroup extends Base
 
     public function del()
     {
+        // 当前组是否有子级
+        $id = $this->request->param('id');
+        $authGroup = $this->model->get($id);
+        $subAuthGroupCount = $this->model->where(['pid' => $authGroup->id])->count();
+        if ($subAuthGroupCount != 0) {
+            return $this->result([], 0, '当前管理组下存在其他管理组');
+        }
+        if ($authGroup->delete()) {
+            return $this->result([], 0, '删除成功');
+        } else {
+            return $this->result([], 0, '删除失败：' . $this->model->getError());
+
+        }
+        // array_diff() // 其他参数如果全部不包含第一个参数的某成员，就返回这个成员
     }
 
     /**
@@ -91,17 +108,27 @@ class AuthGroup extends Base
             }
         }
         // 取出所有菜单
-        $AuthRule = collection(AuthRule::select())->toArray();
+        $AllRules = collection(AuthRule::select())->toArray();
         // 已选菜单
         $authGroup = $this->model->get($id);
-        $resultRules = []; // 可选菜单
-        $rulesArr = $this->auth->getRuleIds($this->auth->id);
-        if (in_array('*', $rulesArr)) {
-            // 返回全部菜单
-            $resultRules = $AuthRule;
+        $authGroupIds = explode(',', $authGroup->rules);
+        // 可选菜单
+        $rulesIdArr = [];
+        // 最终返回的
+        $resultRules = [];
+        if ($authGroup->pid != 0) {
+            $pAuthGroup = $this->model->get($authGroup->pid);
+            $rulesIdArr = explode(',', $pAuthGroup->rules);
         } else {
-            foreach ($AuthRule as $k => $v) {
-                if (in_array($v['id'], $rulesArr)) {
+            // 超级管理员
+            $rulesIdArr = ['*'];
+        }
+        if (in_array('*', $rulesIdArr)) {
+            // 返回全部菜单
+            $resultRules = $AllRules;
+        } else {
+            foreach ($AllRules as $k => $v) {
+                if (in_array($v['id'], $rulesIdArr)) {
                     $resultRules[] = $v;
                 }
             }
@@ -113,8 +140,7 @@ class AuthGroup extends Base
             ];
         }
         // 已选菜单
-        $rulesArr = explode(',', $authGroup->rules);
-        if (in_array('*', $rulesArr)) {
+        if (in_array('*', $authGroupIds)) {
             foreach ($resultRules as $k => $v) {
                 $resultRules[$k]['state'] = [
                     'selected' => true,
@@ -122,7 +148,7 @@ class AuthGroup extends Base
             }
         } else {
             foreach ($resultRules as $k => $v) {
-                if (in_array($v['id'], $rulesArr)) {
+                if (in_array($v['id'], $authGroupIds)) {
                     $resultRules[$k]['state'] = [
                         'selected' => true,
                     ];

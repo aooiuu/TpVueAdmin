@@ -107,4 +107,43 @@ class Auth extends \fast\Auth
     {
         $this->requestUri = $uri;
     }
+
+    public function getGroups($uid = null)
+    {
+        $uid = is_null($uid) ? $this->id : $uid;
+        return parent::getGroups($uid);
+    }
+
+    public function getRuleList($uid = null)
+    {
+        $uid = is_null($uid) ? $this->id : $uid;
+        return parent::getRuleList($uid);
+    }
+
+    public function getRuleIds($uid = null)
+    {
+        $uid = is_null($uid) ? $this->id : $uid;
+        return parent::getRuleIds($uid);
+    }
+
+    public function isSuperAdmin()
+    {
+        return in_array('*', $this->getRuleIds()) ? true : false;
+    }
+
+    /**
+     * 获取管理员所属于的分组ID
+     * @param int $uid
+     * @return array
+     */
+    public function getGroupIds($uid = null)
+    {
+        $groups = $this->getGroups($uid);
+        $groupIds = [];
+        foreach ($groups as $K => $v) {
+            $groupIds[] = (int) $v['group_id'];
+        }
+        return $groupIds;
+    }
+
 }
