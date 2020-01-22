@@ -1,12 +1,19 @@
 <template>
   <el-dialog :visible.sync="showEx" :title="title" :close-on-click-modal="false">
     <el-form :model="form.data" label-position="left" label-width="70px" size="small">
-      <el-form-item label="名称">
+      <el-form-item label="父级">
+        <el-cascader
+          v-model="form.pid.value"
+          :options="form.pid.options"
+          size="small"
+          style="width: 100%;"
+          @change="pidOnChange"
+        />
+      </el-form-item>
+      <el-form-item label="分组名">
         <el-input v-model="form.data.name" />
       </el-form-item>
       <el-form-item label="权限">
-        <span>选中全部</span>
-        <el-checkbox v-model="tree.checkAll" @change="treeOnChange" />
         <el-tree
           ref="treeX"
           :data="tree.data"
@@ -30,5 +37,6 @@
 </template>
 
 <script>
-export { default } from './edit.js'
+export { default } from './script'
 </script>
+

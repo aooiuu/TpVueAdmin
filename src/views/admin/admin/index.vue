@@ -22,6 +22,7 @@
       <el-table-column prop="id" label="ID" align="center" width="60" />
       <el-table-column prop="username" label="username" align="center" />
       <el-table-column prop="nickname" label="nickname" align="center" />
+      <el-table-column prop="nickname" label="所属组别" align="center" />
       <!-- 操作区域 -->
       <el-table-column label="操作" align="center" show-overflow-tooltip fixed="right" width="100">
         <template>
@@ -56,28 +57,38 @@ export default {
     }
   },
   methods: {
-    refresh() {
+    async refresh() {
       this.table.loding = true
-      this.$request({
-        url: 'admin/index/index',
-        method: 'GET',
-        params: {
-          search: this.table.search,
-          sort: this.table.sort,
-          order: this.table.order,
-          offset: this.table.offset,
-          limit: this.table.limit,
-          filter: this.table.filter,
-          op: this.table.op
+      try {
+        const { code, msg, data } = await this.$request({
+          url: 'admin/admin/index',
+          method: 'GET',
+          params: {
+            search: this.table.search,
+            sort: this.table.sort,
+            order: this.table.order,
+            offset: this.table.offset,
+            limit: this.table.limit,
+            filter: this.table.filter,
+            op: this.table.op
+          }})
+        if (code !== 0) {
+          this.$message({
+            type: 'info',
+            message: msg
+          })
+        } else {
+          const { total, rows } = data
+          this.table.total = total
+          this.table.data = rows
         }
-      })
-        .then(data => {
-          console.log('data', data)
+      } catch (error) {
+        this.$message({
+          type: 'error',
+          message: '接口访问失败'
         })
-        .catch(() => {})
-        .finally(() => {
-          this.table.loding = false
-        })
+      }
+      this.table.loding = false
     }
   }
 }

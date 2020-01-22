@@ -41,7 +41,7 @@ const actions = {
     resetRouter()
     dispatch('tagsView/delAllViews', null, { root: true })
   },
-  // get user info
+  // TODO: getInfo
   getInfo({ commit, state }) {
     console.log('getInfo:', { commit, state })
     return new Promise((resolve, reject) => {

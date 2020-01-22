@@ -1,4 +1,4 @@
-import { getRules, buildRulesTree, buildGroupPidTree } from '@/views/auth/utils'
+import { getRules, buildRulesTree, buildGroupPidTree } from '@/views/admin/utils'
 
 export default {
   props: {
@@ -22,7 +22,7 @@ export default {
         data: {
           pid: 0,
           name: '',
-          rules: ''
+          rules: []
         },
         pid: {
           options: [],
@@ -59,9 +59,9 @@ export default {
       try {
         const { code, msg, data } = await getRules(id)
         if (code === 0) {
-          this.tree.origData = data
-          this.tree.data = buildRulesTree(data)
-          const checkedKeys = this.tree.data
+          this.tree.origData = data.filter(item => item.children ? true : item.state.selected)
+          this.tree.data = buildRulesTree(this.tree.origData)
+          const checkedKeys = this.tree.origData
             .filter(item => item.state.selected)
             .map(item => item.id)
           this.$refs.treeX.setCheckedKeys(checkedKeys)
@@ -78,24 +78,24 @@ export default {
     pidOnChange(value) {
       this.form.pid.value = value
       this.form.data.pid = value[value.length - 1]
-      console.log('this.form:', this.form)
-      console.log('this.form.pid.value:', this.form.pid.value)
+      this.getRulesTree(this.form.data.pid === 0 ? undefined : this.form.data.pid)
     },
     async save() {
-      return console.log(this.form.data)
-      // try {
-      //   const { code, msg } = await this.$request({
-      //     url: 'admin/auth_group/add',
-      //     method: 'POST',
-      //     data: this.form.data
-      //   })
-      //   this.$message({
-      //     type: code !== 0 ? 'error' : 'success',
-      //     message: msg
-      //   })
-      // } catch (error) {
-      //   console.warn(error)
-      // }
+      this.form.data.rules = this.$refs.treeX.getCheckedKeys()
+      console.log(this.form.origData)
+      try {
+        const { code, msg } = await this.$request({
+          url: 'admin/auth_group/add',
+          method: 'POST',
+          data: this.form.data
+        })
+        this.$message({
+          type: code !== 0 ? 'error' : 'success',
+          message: msg
+        })
+      } catch (error) {
+        console.warn(error)
+      }
     }
   }
 }

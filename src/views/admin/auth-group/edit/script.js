@@ -1,4 +1,4 @@
-import { getRules, buildRulesTree } from '@/views/auth/utils'
+import { getRules, buildRulesTree } from '@/views/admin/utils'
 
 export default {
   props: {
@@ -66,9 +66,9 @@ export default {
         if (code === 0) {
           this.tree.origData = data
           this.tree.data = buildRulesTree(data)
-          const checkedKeys = this.tree.data
-            .filter(item => item.state.selected)
-            .map(item => item.id)
+          const checkedKeys = data.filter(item => item.state.selected)
+          .filter(item => !data.find(e => e.pid === item.id))
+          .map(item => item.id)
           this.$refs.treeX.setCheckedKeys(checkedKeys)
         } else {
           this.$message({
@@ -81,7 +81,7 @@ export default {
       }
     },
     async save() {
-      this.form.data.rules = this.$refs.treeX.getCheckedKeys()
+      this.form.data.rules = this.$refs.treeX.getCheckedNodes(false, true).map(e => e.id)
       console.log('this.form.data:', this.form.data)
       try {
         const { code, msg } = await this.$request({

@@ -1,6 +1,9 @@
 <template>
   <el-dialog :visible.sync="showEx" :title="title" :close-on-click-modal="false">
     <el-form :model="form.data" label-position="left" label-width="70px" size="small">
+      <el-form-item label="是否菜单">
+        <el-switch v-model="form.data.ismenu" :active-value="1" :inactive-value="0" />
+      </el-form-item>
       <el-form-item label="父级">
         <el-cascader
           v-model="form.pid.value"
@@ -39,7 +42,7 @@
 </template>
 
 <script>
-import { buildRulePidTree } from '@/views/auth/utils'
+import { buildRulePidTree } from '@/views/admin/utils'
 
 export default {
   props: {
@@ -54,6 +57,10 @@ export default {
     list: {
       type: Array,
       default: () => []
+    },
+    item: {
+      type: Object,
+      default: () => {}
     }
   },
   data() {
@@ -67,7 +74,9 @@ export default {
           weigh: 0,
           status: true,
           remark: '',
-          type: 'menu'
+          type: 'menu',
+          ismenu: 0,
+          id: 0
         },
         pid: {
           options: [],
@@ -89,12 +98,39 @@ export default {
       if (!value) {
         return
       }
+      const filterObj = function(obj, keys) {
+        const result = {}
+        Object
+        .keys(obj)
+        .filter(e => keys.includes(e))
+        .forEach(e => { result[e] = obj[e] })
+        return result
+      }
+      this.form.data = Object.assign(this.form.data, filterObj(this.item, Object.keys(this.item)))
       this.form.pid.options = buildRulePidTree(this.list)
-      this.form.pid.value = [0]
+      this.form.pid.value = []
+      let pid = this.item.pid
+      this.form.pid.value.unshift(pid)
+      while (pid !== 0) {
+        const _item = this.list.find(item => item.id === pid)
+        if (!_item) {
+          pid = 0
+        } else {
+           pid = _item.pid
+          this.form.pid.value.unshift(pid)
+        }
+      }
+      if (this.form.pid.value.length > 1) {
+        this.form.pid.value.push(this.item.pid)
+         this.form.pid.value.shift()
+      }
+     console.log(this.form.pid.options)
+     console.log('this.form.pid.value', this.form.pid.value)
+     console.log('this.list:', this.list)
+     console.log('this.item:', this.item)
     }
   },
   mounted() {
-    console.log('this.list:', this.list)
   },
   methods: {
     pidOnChange(value) {
@@ -106,7 +142,7 @@ export default {
     async save() {
       try {
         const { code, msg } = await this.$request({
-          url: 'admin/rule/add',
+          url: 'admin/rule/edit',
           method: 'POST',
           data: this.form.data
         })

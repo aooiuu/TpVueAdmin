@@ -14,6 +14,14 @@ module.exports = {
   // add your custom rules here
   //it is base on https://github.com/vuejs/eslint-config-vue
   rules: {
+    // 在模板字符串中强制使用间距
+    // 'template-curly-spacing': [2, 'never'],
+    // // 强制执行一致的缩进
+    // 'indent': [2, 2, {
+    //   'SwitchCase': 1
+    // }],
+    'indent' : "off",
+    'template-curly-spacing' : "off",
     "vue/max-attributes-per-line": [2, {
       "singleline": 10,
       "multiline": {
@@ -53,9 +61,6 @@ module.exports = {
       'after': true
     }],
     'handle-callback-err': [2, '^(err|error)$'],
-    'indent': [2, 2, {
-      'SwitchCase': 1
-    }],
     'jsx-quotes': [2, 'prefer-single'],
     'key-spacing': [2, {
       'beforeColon': false,
@@ -182,7 +187,6 @@ module.exports = {
     'spaced-comment': [2, 'always', {
       'markers': ['global', 'globals', 'eslint', 'eslint-disable', '*package', '!', ',']
     }],
-    'template-curly-spacing': [2, 'never'],
     'use-isnan': 2,
     'valid-typeof': 2,
     'wrap-iife': [2, 'any'],

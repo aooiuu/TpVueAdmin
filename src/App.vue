@@ -6,6 +6,11 @@
 
 <script>
 export default {
-  name: 'App'
+  name: 'App',
+  mounted() {
+    console.log('mouted ')
+    window.router = this.$router
+    window.route = this.$route
+  }
 }
 </script>

@@ -1,3 +1,4 @@
+// 生成树
 export function toTree(data, config) {
   const id = config && config.id ? config.id : 'id'
   const pid = config && config.pid ? config.pid : 'pid'
@@ -18,4 +19,20 @@ export function toTree(data, config) {
     }
   })
   return val
+}
+// 扁平化树
+export function reverseTree(data) {
+  const nData = [...data]
+  const result = []
+  const pushRes = function(item) {
+    let children = []
+    if (item.children) {
+      children = item.children
+      delete item.children
+    }
+    result.push(item)
+    children.forEach(e => pushRes(e))
+  }
+  nData.forEach(e => pushRes(e))
+  return result
 }

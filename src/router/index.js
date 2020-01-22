@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import { constantRoutes } from './constant-routes'
-import { asyncRoutes } from './async-routes'
+// import { asyncRoutes } from './async-routes'
 
 Vue.use(Router)
 
@@ -41,5 +41,8 @@ export function resetRouter() {
   router.matcher = newRouter.matcher // reset router
 }
 
-export { asyncRoutes, constantRoutes }
+export {
+  // asyncRoutes,
+  constantRoutes
+}
 export default router
