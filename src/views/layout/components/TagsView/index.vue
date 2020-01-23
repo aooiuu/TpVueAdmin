@@ -1,21 +1,26 @@
 <template>
   <div id="tags-view-container" class="tags-view-container">
-    <scroll-pane ref="scrollPane" class="tags-view-wrapper">
-      <router-link
-        v-for="tag in visitedViews"
-        ref="tag"
-        :key="tag.path"
-        :class="isActive(tag)?'active':''"
-        :to="{ path: tag.path, query: tag.query, fullPath: tag.fullPath }"
-        tag="span"
-        class="tags-view-item"
-        @click.middle.native="!isAffix(tag)?closeSelectedTag(tag):''"
-        @contextmenu.prevent.native="openMenu(tag,$event)"
-      >
-        {{ tag.title }}
-        <span v-if="!isAffix(tag)" class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)" />
-      </router-link>
-    </scroll-pane>
+    <div style="display: flex;">
+      <div class="icon-left" />
+      <scroll-pane ref="scrollPane" class="tags-view-wrapper">
+        <router-link
+          v-for="tag in visitedViews"
+          ref="tag"
+          :key="tag.path"
+          :class="isActive(tag)?'active':''"
+          :to="{ path: tag.path, query: tag.query, fullPath: tag.fullPath }"
+          tag="span"
+          class="tags-view-item"
+          @click.middle.native="!isAffix(tag)?closeSelectedTag(tag):''"
+          @contextmenu.prevent.native="openMenu(tag,$event)"
+        >
+          {{ tag.title }}
+          <span v-if="!isAffix(tag)" class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)" />
+        </router-link>
+      </scroll-pane>
+      <div class="icon-right" />
+    </div>
+
     <ul v-show="visible" :style="{left:left+'px',top:top+'px'}" class="contextmenu">
       <li @click="refreshSelectedTag(selectedTag)">Refresh</li>
       <li v-if="!isAffix(selectedTag)" @click="closeSelectedTag(selectedTag)">Close</li>
@@ -201,26 +206,43 @@ export default {
   background: #fff;
   border-bottom: 1px solid #d8dce5;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .12), 0 0 3px 0 rgba(0, 0, 0, .04);
+  >>> .el-scrollbar__bar {
+    visibility: hidden !important;
+  }
+  .icon-left,
+  .icon-right {
+    position: relative;
+    width: 34px;
+    height: 34px;
+    &::before {
+      content: '';
+      display: inline-block;
+      height: 9px;
+      width: 9px;
+      border-width: 1px 1px 0 0;
+      border-color: #909399;
+      border-style: solid;
+      transform: translateY(-50%) rotate(45deg);
+      position: absolute;
+      top: 50%;
+      right: 12px;
+    }
+  }
+  .icon-left {
+    transform: rotate(180deg);
+  }
   .tags-view-wrapper {
     .tags-view-item {
       display: inline-block;
       position: relative;
       cursor: pointer;
-      height: 26px;
-      line-height: 26px;
-      border: 1px solid #d8dce5;
+      height: 34px;
+      line-height: 34px;
+      border: 1px solid #f4f8ff;
       color: #495060;
       background: #fff;
       padding: 0 8px;
       font-size: 12px;
-      margin-left: 5px;
-      margin-top: 4px;
-      &:first-of-type {
-        margin-left: 15px;
-      }
-      &:last-of-type {
-        margin-right: 15px;
-      }
       &.active {
         background-color: #42b983;
         color: #fff;
