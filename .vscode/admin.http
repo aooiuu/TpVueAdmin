@@ -1,9 +1,25 @@
+@url = http://admin5.test/admin/admin
+
 ### index
-POST http://admin5.test/admin/admin/index
+POST {{url}}/index
+
+### edit
+
+POST {{url}}/edit
+Content-Type: application/json
+
+{
+  "id": 48,
+  "username": "qqqqqqqq",
+  "password": "aaa",
+  "nickname": "aaa",
+  "group": []
+}
+
 
 ### add
 
-POST http://admin5.test/admin/admin/add
+POST {{url}}/add
 Content-Type: application/json
 
 {
@@ -14,7 +30,7 @@ Content-Type: application/json
 
 ### del
 
-POST http://admin5.test/admin/admin/del
+POST {{url}}/del
 Content-Type: application/json
 
 {

@@ -8,23 +8,29 @@ class Admin extends Base
      * 验证规则
      */
     protected $rule = [
-        'username' => 'require|regex:\w{3,12}|unique:admin',
-        'password' => 'require|regex:\S{32}',
+        'username' => 'require|regex:\w{3,12}',
+        'password' => 'require',
         'nickname' => 'require',
-        'email' => 'require|email|unique:admin,email',
     ];
 
     /**
      * 验证场景
      */
     protected $scene = [
-        'add' => ['username' => 'require', 'nickname' => 'require', 'password' => 'require'],
+        'add' => [
+            'username' => 'require|regex:\w{3,12}|unique:admin',
+            'nickname' => 'require',
+            'password' => 'require',
+        ],
+        'edit' => [
+        ],
     ];
 
     /**
      * 提示消息
      */
     protected $message = [
+        'username.unique' => '用户名已存在',
         'username' => '用户名格式有误',
     ];
 
