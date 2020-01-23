@@ -20,9 +20,13 @@
     <!-- 表格 -->
     <el-table v-loading="table.loding" stripe :data="table.data" style="width: 100%" border fit highlight-current-row size="small">
       <el-table-column prop="id" label="ID" align="center" width="60" />
-      <el-table-column prop="username" label="username" align="center" />
-      <el-table-column prop="nickname" label="nickname" align="center" />
-      <el-table-column prop="nickname" label="所属组别" align="center" />
+      <el-table-column prop="username" label="用户名" align="center" />
+      <el-table-column prop="nickname" label="昵称" align="center" />
+      <el-table-column prop="nickname" label="所属组别" align="center">
+        <template slot-scope="{row}">
+          <el-tag v-for="item in row.auth_group_access" :key="item.group_id + '_' + item.uid">{{ item.auth_group.name }}</el-tag>
+        </template>
+      </el-table-column>
       <!-- 操作区域 -->
       <el-table-column label="操作" align="center" show-overflow-tooltip fixed="right" width="100">
         <template>
@@ -55,6 +59,9 @@ export default {
         op: {}
       }
     }
+  },
+  mounted() {
+    this.refresh()
   },
   methods: {
     async refresh() {
