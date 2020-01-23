@@ -43,7 +43,7 @@ service.interceptors.response.use(
    * You can also judge the status by HTTP Status Code
    */
   response => {
-    console.log('response:', response)
+    console.table(response.data ? response.data : response)
     const res = response.data
     // TODO: 登录失效状态码
     if (res.code === 202 && !response.request.responseURL.includes('logout')) {
@@ -72,6 +72,9 @@ service.interceptors.response.use(
     let message = '数据异常'
     if (typeof error.response !== 'undefined' && typeof error.response.status !== 'undefined') {
       switch (error.response.status) {
+        case 422:
+          message = '数据异常, 错误码: ' + error.response.data.msg
+          break
         case 404:
         default:
           message = '数据异常, 错误码: ' + error.response.status

@@ -26,7 +26,7 @@
         <el-input v-model="form.data.remark" />
       </el-form-item>
       <el-form-item label="状态">
-        <el-switch v-model="form.data.status" />
+        <el-switch v-model="form.data.status" active-value="normal" inactive-value="hidden" />
       </el-form-item>
     </el-form>
     <!-- footer -->
@@ -43,6 +43,7 @@
 
 <script>
 import { buildRulePidTree } from '@/views/admin/utils'
+import { filterObj } from '@/utils/object'
 
 export default {
   props: {
@@ -69,10 +70,10 @@ export default {
       form: {
         data: {
           pid: 0,
-          name: 'a',
-          title: 'v',
+          name: '',
+          title: '',
           weigh: 0,
-          status: true,
+          status: 'normal',
           remark: '',
           type: 'menu',
           ismenu: 0,
@@ -97,14 +98,6 @@ export default {
     show(value) {
       if (!value) {
         return
-      }
-      const filterObj = function(obj, keys) {
-        const result = {}
-        Object
-        .keys(obj)
-        .filter(e => keys.includes(e))
-        .forEach(e => { result[e] = obj[e] })
-        return result
       }
       this.form.data = Object.assign(this.form.data, filterObj(this.item, Object.keys(this.item)))
       this.form.pid.options = buildRulePidTree(this.list)

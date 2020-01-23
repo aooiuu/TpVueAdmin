@@ -21,12 +21,26 @@
       </el-button>
     </div>
     <!-- 表格 -->
-    <el-table v-loading="table.loding" stripe :data="table.data" style="width: 100%" border fit highlight-current-row size="small">
+    <el-table
+      v-loading="table.loding"
+      stripe
+      :data="table.data"
+      style="width: 100%"
+      border
+      fit
+      highlight-current-row
+      size="small"
+      :row-style="({row, rowIndex})=> ({color: row.ismenu ? '#1890ff' : '#606266'})"
+    >
       <el-table-column prop="id" label="ID" align="center" width="60" />
       <el-table-column prop="pid" label="父级" align="center" width="60" />
-      <el-table-column prop="title" label="标题" align="center" />
+      <el-table-column prop="title" label="标题" align="center">
+        <p slot-scope="{row}" style="text-align: left;">
+          {{ (row.text + (row.text ? ' ' : '' ) + row.title) }}
+        </p>
+      </el-table-column>
       <el-table-column prop="name" label="规则" align="center" />
-      <el-table-column prop="weigh" label="权重" align="center" />
+      <el-table-column prop="weigh" label="权重" align="center" width="50" />
       <el-table-column
         prop="ismenu"
         label="是否菜单"
@@ -36,7 +50,9 @@
         filter-placement="bottom-end"
         width="100"
       >
-        <el-switch slot-scope="{row}" :value="row.ismenu" :active-value="1" :inactive-value="0" disabled />
+        <el-tag slot-scope="{row}" :type="row.ismenu === 1 ? 'success' : 'info'">
+          {{ row.ismenu === 1 ? '是' : '否' }}
+        </el-tag>
       </el-table-column>
       <!-- 操作区域 -->
       <el-table-column label="操作" align="center" show-overflow-tooltip fixed="right" width="80">
@@ -61,7 +77,7 @@
 
 <script>
 import { confirm } from '@/utils/messageBox'
-import { toTree, reverseTree } from '@/utils/tree'
+import { toTree, reverseTree, toTreeArr } from '@/utils/tree'
 export default {
   components: {
     Add: () => import('./add'),
@@ -148,7 +164,7 @@ export default {
           const { total, rows } = data
           this.table.total = total
           // rows.sort((a, b) => a.pid !== b.pid ? a.pid - b.pid : a.pid - b.id)
-          this.table.data = reverseTree(toTree(rows))
+          this.table.data = reverseTree(toTreeArr(toTree(rows)))
         }
       } catch (error) {
         this.$message({

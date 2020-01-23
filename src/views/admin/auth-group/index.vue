@@ -23,11 +23,18 @@
     <!-- 表格 -->
     <el-table v-loading="table.loding" stripe :data="table.data" style="width: 100%" border fit highlight-current-row size="small">
       <el-table-column prop="id" label="ID" align="center" width="60" />
-      <el-table-column prop="pid" label="pid" align="center" />
+      <el-table-column prop="pid" label="父级" align="center" width="80" />
       <el-table-column prop="name" label="角色组" align="center">
-        <el-tag slot-scope="{row}">{{ row.name }}</el-tag>
+        <p slot-scope="{row}" style="text-align: left;">
+          {{ (row.text + (row.text ? ' ' : '' ) + row.name) }}
+        </p>
       </el-table-column>
-      <el-table-column prop="rules" label="rules" align="center" />
+      <el-table-column prop="status" label="状态" align="center" width="80">
+        <el-tag slot-scope="{row}" :type="row.status === 'normal' ? 'success' : 'danger'">
+          {{ row.status === 'normal' ? '正常' : '隐藏' }}
+        </el-tag>
+      </el-table-column>
+      <!-- <el-table-column prop="rules" label="rules" align="center" /> -->
       <!-- 操作区域 -->
       <el-table-column label="操作" align="center" show-overflow-tooltip fixed="right" width="80">
         <template slot-scope="{row}">
@@ -45,6 +52,8 @@
 
 <script>
 import { confirm } from '@/utils/messageBox'
+import { toTree, reverseTree, toTreeArr } from '@/utils/tree'
+
 export default {
   components: {
     Add: () => import('./add'),
@@ -101,7 +110,7 @@ export default {
         } else {
           const { total, rows } = data
           this.table.total = total
-          this.table.data = rows
+          this.table.data = reverseTree(toTreeArr(toTree(rows)))
         }
       } catch (error) {
         this.$message({

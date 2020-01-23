@@ -1,29 +1,24 @@
-<template>
+<template class="admin_add">
   <el-dialog :visible.sync="showEx" :title="title" :close-on-click-modal="false">
     <el-form :model="form.data" label-position="left" label-width="70px" size="small">
-      <el-form-item label="是否菜单">
-        <el-switch v-model="form.data.ismenu" :active-value="1" :inactive-value="0" />
+      <el-form-item label="用户组">
+        <el-select v-model="form.data.group" multiple placeholder="请选择" style="width:100%;">
+          <el-option
+            v-for="item in form.group.options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
       </el-form-item>
-      <el-form-item label="父级">
-        <el-cascader
-          v-model="form.pid.value"
-          :options="form.pid.options"
-          size="small"
-          style="width: 100%;"
-          @change="pidOnChange"
-        />
+      <el-form-item label="用户名">
+        <el-input v-model="form.data.username" />
       </el-form-item>
-      <el-form-item label="标题">
-        <el-input v-model="form.data.title" />
+      <el-form-item label="密码">
+        <el-input v-model="form.data.password" type="password" />
       </el-form-item>
-      <el-form-item label="规则">
-        <el-input v-model="form.data.name" placeholder="目录名/控制器名/方法名" />
-      </el-form-item>
-      <el-form-item label="权重">
-        <el-input v-model="form.data.weigh" />
-      </el-form-item>
-      <el-form-item label="备注">
-        <el-input v-model="form.data.remark" />
+      <el-form-item label="昵称">
+        <el-input v-model="form.data.nickname" />
       </el-form-item>
       <el-form-item label="状态">
         <el-switch v-model="form.data.status" active-value="normal" inactive-value="hidden" />
@@ -42,7 +37,7 @@
 </template>
 
 <script>
-import { buildRulePidTree } from '@/views/admin/utils'
+import { toTree, toTreeArr } from '@/utils/tree'
 
 export default {
   props: {
@@ -53,10 +48,6 @@ export default {
     title: {
       type: String,
       default: '编辑'
-    },
-    list: {
-      type: Array,
-      default: () => []
     }
   },
   data() {
@@ -64,18 +55,15 @@ export default {
       treeIsexpand: false,
       form: {
         data: {
-          pid: 0,
-          name: '',
-          title: '',
-          weigh: 0,
+          username: '',
+          nickname: '',
+          password: '',
           status: 'normal',
-          remark: '',
-          type: 'menu',
-          ismenu: 1
+          // 多个分组
+          group: []
         },
-        pid: {
-          options: [],
-          value: [0]
+        group: {
+          options: []
         }
       }
     }
@@ -93,24 +81,36 @@ export default {
       if (!value) {
         return
       }
-      this.form.pid.options = buildRulePidTree(this.list)
-      this.form.pid.value = [0]
+
+      this.initAuthGroupTree()
     }
   },
-  mounted() {
-    console.log('this.list:', this.list)
-  },
   methods: {
-    pidOnChange(value) {
-      this.form.pid.value = value
-      this.form.data.pid = this.form.pid.value[this.form.pid.value.length - 1]
-      console.log('this.form:', this.form)
-      console.log('this.form.pid.value:', this.form.pid.value)
+    async initAuthGroupTree() {
+      const { code, msg, data } = await this.$request({
+        url: 'admin/auth_group/index',
+        method: 'POST',
+        data: this.form.data
+      })
+      if (code !== 0) {
+          this.$message({
+          type: 'error',
+          message: msg
+        })
+        return
+      }
+      console.log({ code, msg, data })
+      this.form.group.options = toTreeArr(toTree(data.rows)).map(e => ({
+        label: e.text + ' ' + e.name,
+        value: e.id
+      }))
+      console.table(JSON.parse(JSON.stringify(this.form.group.options)), ['label', 'value'])
     },
     async save() {
+      console.table({ ...this.form.data })
       try {
         const { code, msg } = await this.$request({
-          url: 'admin/rule/add',
+          url: 'admin/admin/add',
           method: 'POST',
           data: this.form.data
         })
@@ -127,4 +127,7 @@ export default {
 </script>
 
 <style>
+.el-select-dropdown__item{
+  white-space: pre;
+}
 </style>

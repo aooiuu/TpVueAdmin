@@ -1,5 +1,8 @@
 <template>
   <div class="app-container">
+    <!-- 弹窗 -->
+    <Add :show="Add.show" title="添加" @hide="Add.show = false; refresh()" />
+    <Edit :show="Edit.show" title="编辑" :item="item" @hide="Edit.show = false; refresh()" />
     <!-- 工具栏 -->
     <div class="filter-container">
       <el-button class="filter-item" size="small" @click="refresh">刷新</el-button>
@@ -8,7 +11,7 @@
         <svg-icon icon-class="search-solid" />
         搜索
       </el-button>
-      <el-button class="filter-item" type="primary" size="small">
+      <el-button class="filter-item" type="primary" size="small" @click="Add.show = true">
         <svg-icon icon-class="plus-solid" />
         添加
       </el-button>
@@ -24,16 +27,28 @@
       <el-table-column prop="nickname" label="昵称" align="center" />
       <el-table-column prop="nickname" label="所属组别" align="center">
         <template slot-scope="{row}">
-          <el-tag v-for="item in row.auth_group_access" :key="item.group_id + '_' + item.uid">{{ item.auth_group.name }}</el-tag>
+          <el-tag
+            v-for="authGroupAccess in row.auth_group_access"
+            :key="authGroupAccess.group_id + '_' + authGroupAccess.uid"
+            size="small"
+            class="auth-group-tag"
+          >
+            {{ authGroupAccess.auth_group.name }}
+          </el-tag>
         </template>
+      </el-table-column>
+      <el-table-column prop="status" label="状态" align="center">
+        <el-tag slot-scope="{row}" :type="row.status === 'normal' ? 'success' : 'danger'">
+          {{ row.status === 'normal' ? '正常' : '隐藏' }}
+        </el-tag>
       </el-table-column>
       <!-- 操作区域 -->
       <el-table-column label="操作" align="center" show-overflow-tooltip fixed="right" width="100">
-        <template>
-          <el-button title="编辑" class="btn-icon" type="primary" size="small">
+        <template slot-scope="{row}">
+          <el-button title="编辑" class="btn-icon" type="primary" size="small" @click="edit(row)">
             <svg-icon icon-class="pencil-alt-solid" />
           </el-button>
-          <el-button title="删除" class="btn-icon" type="danger" size="small">
+          <el-button title="删除" class="btn-icon" type="danger" size="small" @click="del(row)">
             <svg-icon icon-class="trash-alt-solid" />
           </el-button>
         </template>
@@ -43,9 +58,21 @@
 </template>
 
 <script>
+import { confirm } from '@/utils/messageBox'
 export default {
+  components: {
+    Add: () => import('./add'),
+    Edit: () => import('./edit')
+  },
   data() {
     return {
+      item: {},
+      Add: {
+        show: false
+      },
+      Edit: {
+        show: false
+      },
       table: {
         loding: false,
         data: [],
@@ -96,7 +123,40 @@ export default {
         })
       }
       this.table.loding = false
+    },
+    edit(item) {
+      this.item = item
+      this.Edit.show = true
+      console.log('edit:', this.item)
+    },
+    async del(item) {
+      if (await confirm('此操作将删除此信息, 是否继续?')) {
+        try {
+          const { code, msg } = await this.$request({
+            url: 'admin/admin/del',
+            method: 'POST',
+            data: {
+              id: item.id
+            }})
+          this.$message({
+            type: code !== 0 ? 'error' : 'success',
+            message: msg
+          })
+          this.refresh()
+        } catch (error) {
+          this.$message({
+            type: 'error',
+            message: '接口访问失败'
+          })
+        }
+      }
     }
   }
 }
 </script>
+
+<style lang="css">
+.auth-group-tag {
+  margin: 2px 5px;
+}
+</style>

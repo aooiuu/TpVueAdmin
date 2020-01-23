@@ -46,7 +46,6 @@ export function getAsyncComponent(_item) {
     item.children = _item.children
     item.alwaysShow = true
   }
-  console.log('getAsyncComponent', { ...item })
    // 如果有子级菜单
   let _component = 'layout'
   if (item.children) {
@@ -90,7 +89,6 @@ const actions = {
       } catch (error) {
         reject(error)
       }
-      console.log({ asyncRoutes })
       // 路由转换
       let accessedRoutes
       if (roles.includes('admin')) {
