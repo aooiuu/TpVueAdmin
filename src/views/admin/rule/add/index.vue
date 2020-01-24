@@ -5,13 +5,14 @@
         <el-switch v-model="form.data.ismenu" :active-value="1" :inactive-value="0" />
       </el-form-item>
       <el-form-item label="父级">
-        <el-cascader
-          v-model="form.pid.value"
-          :options="form.pid.options"
-          size="small"
-          style="width: 100%;"
-          @change="pidOnChange"
-        />
+        <el-select v-model="form.data.pid" placeholder="请选择" style="width:100%;">
+          <el-option
+            v-for="options in form.pid.options"
+            :key="options.value"
+            :label="options.label"
+            :value="options.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="标题">
         <el-input v-model="form.data.title" />
@@ -78,7 +79,7 @@ export default {
       iconsShow: false,
       form: {
         data: {
-          pid: 0,
+          pid: null,
           name: '',
           title: '',
           weigh: 0,
@@ -89,8 +90,7 @@ export default {
           ismenu: 1
         },
         pid: {
-          options: [],
-          value: [0]
+          options: []
         }
       }
     }
@@ -109,8 +109,10 @@ export default {
       if (!value) {
         return
       }
-      this.form.pid.options = buildRulePidTree(this.list)
-      this.form.pid.value = [0]
+      this.form.pid.options = buildRulePidTree(this.list).map(e => {
+        e.label = e.text + e.label
+        return e
+      })
     }
   },
   mounted() {
@@ -127,6 +129,7 @@ export default {
       console.log('this.form.pid.value:', this.form.pid.value)
     },
     async save() {
+      console.table(JSON.parse(JSON.stringify(this.form.data)))
       try {
         const { code, msg } = await this.$request({
           url: 'admin/rule/add',

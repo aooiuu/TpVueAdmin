@@ -1,4 +1,4 @@
-import { toTree } from '@/utils/tree'
+import { toTree, toTreeArr } from '@/utils/tree'
 import { request } from '@/api/request'
 
 export function getRules(id) {
@@ -57,7 +57,7 @@ export function buildRulePidTree(data) {
     },
     ...item
   }))
-  return buildPidTreeChildren(toTree(newList, {
+  return toTreeArr(toTree(newList, {
     id: 'id',
     pid: 'pid'
   }))

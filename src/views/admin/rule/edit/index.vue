@@ -5,13 +5,14 @@
         <el-switch v-model="form.data.ismenu" :active-value="1" :inactive-value="0" />
       </el-form-item>
       <el-form-item label="父级">
-        <el-cascader
-          v-model="form.pid.value"
-          :options="form.pid.options"
-          size="small"
-          style="width: 100%;"
-          @change="pidOnChange"
-        />
+        <el-select v-model="form.data.pid" placeholder="请选择" style="width:100%;">
+          <el-option
+            v-for="options in form.pid.options"
+            :key="options.value"
+            :label="options.label"
+            :value="options.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="标题">
         <el-input v-model="form.data.title" />
@@ -83,7 +84,7 @@ export default {
       iconsShow: false,
       form: {
         data: {
-          pid: 0,
+          pid: null,
           name: '',
           title: '',
           weigh: 0,
@@ -95,8 +96,7 @@ export default {
           icon: ''
         },
         pid: {
-          options: [],
-          value: [0]
+          options: []
         }
       }
     }
@@ -116,27 +116,10 @@ export default {
         return
       }
       this.form.data = Object.assign(this.form.data, filterObj(this.item, Object.keys(this.form.data)))
-      this.form.pid.options = buildRulePidTree(this.list)
-      this.form.pid.value = []
-      let pid = this.item.pid
-      this.form.pid.value.unshift(pid)
-      while (pid !== 0) {
-        const _item = this.list.find(item => item.id === pid)
-        if (!_item) {
-          pid = 0
-        } else {
-           pid = _item.pid
-          this.form.pid.value.unshift(pid)
-        }
-      }
-      if (this.form.pid.value.length > 1) {
-        this.form.pid.value.push(this.item.pid)
-         this.form.pid.value.shift()
-      }
-     console.log(this.form.pid.options)
-     console.log('this.form.pid.value', this.form.pid.value)
-     console.log('this.list:', this.list)
-     console.log('this.item:', this.item)
+      this.form.pid.options = buildRulePidTree(this.list).map(e => {
+        e.label = e.text + e.label
+        return e
+      })
      console.table(JSON.parse(JSON.stringify(this.form.data)))
     }
   },

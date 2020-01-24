@@ -61,20 +61,33 @@
         </el-tag>
       </el-table-column>
       <!-- 操作区域 -->
-      <el-table-column label="操作" align="center" show-overflow-tooltip fixed="right" width="80">
-        <el-button
-          slot-scope="{row}"
-          title="编辑"
-          class="btn-icon"
-          type="primary"
-          size="small"
-          @click="edit(row)"
-        >
-          <svg-icon icon-class="pencil-alt-solid" />
-        </el-button>
-        <el-button title="删除" class="btn-icon" type="danger" size="small" @click="del(row)">
-          <svg-icon icon-class="trash-alt-solid" />
-        </el-button>
+      <el-table-column
+        label="操作"
+        align="center"
+        show-overflow-tooltip
+        fixed="right"
+        width="120"
+      >
+        <template slot-scope="{row}">
+          <el-button
+            title="编辑"
+            class="btn-icon"
+            type="primary"
+            size="small"
+            @click="edit(row)"
+          >
+            <svg-icon icon-class="pencil-alt-solid" />
+          </el-button>
+          <el-button
+            title="删除"
+            class="btn-icon"
+            type="danger"
+            size="small"
+            @click="del(row)"
+          >
+            <svg-icon icon-class="trash-alt-solid" />
+          </el-button>
+        </template>
       </el-table-column>
     </el-table>
   </div>
@@ -168,7 +181,6 @@ export default {
         } else {
           const { total, rows } = data
           this.table.total = total
-          // rows.sort((a, b) => a.pid !== b.pid ? a.pid - b.pid : a.pid - b.id)
           this.table.data = reverseTree(toTreeArr(toTree(rows)))
         }
       } catch (error) {
