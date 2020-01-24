@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div class="app-container admin_rule">
     <!-- 弹窗 -->
     <Add :show="Add.show" title="添加" :list="table.data" @hide="Add.show = false; refresh()" />
     <Edit :show="Edit.show" title="编辑" :list="table.data" :item="item" @hide="Edit.show = false; refresh()" />
@@ -40,6 +40,12 @@
         </p>
       </el-table-column>
       <el-table-column prop="name" label="规则" align="center" />
+      <el-table-column prop="icon" label="图标" align="center" width="50">
+        <template slot-scope="{row}">
+          <svg-icon v-if="row.icon" :icon-class="row.icon" />
+          <span v-else>无</span>
+        </template>
+      </el-table-column>
       <el-table-column prop="weigh" label="权重" align="center" width="50" />
       <el-table-column
         prop="ismenu"
@@ -56,20 +62,19 @@
       </el-table-column>
       <!-- 操作区域 -->
       <el-table-column label="操作" align="center" show-overflow-tooltip fixed="right" width="80">
-        <template slot-scope="{row}">
-          <el-button
-            title="编辑"
-            class="btn-icon"
-            type="primary"
-            size="small"
-            @click="edit(row)"
-          >
-            <svg-icon icon-class="pencil-alt-solid" />
-          </el-button>
-          <el-button title="删除" class="btn-icon" type="danger" size="small" @click="del(row)">
-            <svg-icon icon-class="trash-alt-solid" />
-          </el-button>
-        </template>
+        <el-button
+          slot-scope="{row}"
+          title="编辑"
+          class="btn-icon"
+          type="primary"
+          size="small"
+          @click="edit(row)"
+        >
+          <svg-icon icon-class="pencil-alt-solid" />
+        </el-button>
+        <el-button title="删除" class="btn-icon" type="danger" size="small" @click="del(row)">
+          <svg-icon icon-class="trash-alt-solid" />
+        </el-button>
       </el-table-column>
     </el-table>
   </div>
@@ -177,3 +182,26 @@ export default {
   }
 }
 </script>
+
+<style>
+.admin_rule .icons {
+  height: 200px;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  visibility: hidden;
+  opacity: 0;
+  transition: all ease .2s;
+  z-index: 9;
+  background-color: #fff;
+  border: solid 1px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 12px 0 rgba(0,0,0,.3);
+  padding: 5px;
+}
+.admin_rule .icons.show {
+  bottom: 33px;
+  opacity: 1;
+  visibility: visible;
+}
+</style>

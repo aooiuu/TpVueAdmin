@@ -19,6 +19,16 @@
       <el-form-item label="规则">
         <el-input v-model="form.data.name" placeholder="目录名/控制器名/方法名" />
       </el-form-item>
+      <el-form-item label="图标">
+        <el-button size="small" @click="iconsShow = !iconsShow">
+          <svg-icon v-if="form.data.icon" :icon-class="form.data.icon" />
+          <span v-else>无</span>
+        </el-button>
+        <icons
+          :class="{icons: true, show: iconsShow}"
+          @handleClipboard="handleClipboard"
+        />
+      </el-form-item>
       <el-form-item label="权重">
         <el-input v-model="form.data.weigh" />
       </el-form-item>
@@ -31,7 +41,7 @@
     </el-form>
     <!-- footer -->
     <div slot="footer" class="dialog-footer">
-      <el-button size="small" @click="$emit('hide')">
+      <el-button size="small" @click="showEx = false">
         取消
       </el-button>
       <el-button type="primary" size="small" @click="save">
@@ -46,6 +56,9 @@ import { buildRulePidTree } from '@/views/admin/utils'
 import { filterObj } from '@/utils/object'
 
 export default {
+  components: {
+    icons: () => import('@/components/icons')
+  },
   props: {
     show: {
       type: Boolean,
@@ -67,6 +80,7 @@ export default {
   data() {
     return {
       treeIsexpand: false,
+      iconsShow: false,
       form: {
         data: {
           pid: 0,
@@ -77,7 +91,8 @@ export default {
           remark: '',
           type: 'menu',
           ismenu: 0,
-          id: 0
+          id: 0,
+          icon: ''
         },
         pid: {
           options: [],
@@ -90,6 +105,7 @@ export default {
     showEx: {
       get() { return this.show },
       set(value) {
+        this.iconsShow = false
         this.$emit('hide')
       }
     }
@@ -99,7 +115,7 @@ export default {
       if (!value) {
         return
       }
-      this.form.data = Object.assign(this.form.data, filterObj(this.item, Object.keys(this.item)))
+      this.form.data = Object.assign(this.form.data, filterObj(this.item, Object.keys(this.form.data)))
       this.form.pid.options = buildRulePidTree(this.list)
       this.form.pid.value = []
       let pid = this.item.pid
@@ -121,11 +137,15 @@ export default {
      console.log('this.form.pid.value', this.form.pid.value)
      console.log('this.list:', this.list)
      console.log('this.item:', this.item)
+     console.table(JSON.parse(JSON.stringify(this.form.data)))
     }
   },
   mounted() {
   },
   methods: {
+    handleClipboard(item) {
+      this.form.data.icon = item
+    },
     pidOnChange(value) {
       this.form.pid.value = value
       this.form.data.pid = this.form.pid.value[this.form.pid.value.length - 1]

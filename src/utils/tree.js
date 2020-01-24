@@ -1,4 +1,9 @@
-// 生成树
+/**
+ * 生成树
+ * @param {Array} data
+ * @param {Object} config {id, pid}
+ * @return {Array}
+ */
 export function toTree(data, config) {
   const id = config && config.id ? config.id : 'id'
   const pid = config && config.pid ? config.pid : 'pid'
@@ -20,7 +25,11 @@ export function toTree(data, config) {
   })
   return val
 }
-// 扁平化树
+
+/**
+ * 扁平化树, 返回一维数组
+ * @param {Object} data toTree()
+ */
 export function reverseTree(data) {
   const nData = [...data]
   const result = []
@@ -38,8 +47,8 @@ export function reverseTree(data) {
 }
 
 /**
- * 生成一维数组
- * @param data toTree()
+ * 生成一维数组, 添加文本前缀
+ * @param {Object} data toTree()
  */
 export function toTreeArr(data, config) {
   const text = config && config.text ? config.text : { key: 'text', value: 'name' }
