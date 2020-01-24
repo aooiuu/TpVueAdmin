@@ -75,6 +75,7 @@ class Rule extends Base
             $v['component'] = $v['name'];
             $v['meta'] = [
                 'title' => $v['title'],
+                'icon' => $v['icon'],
             ];
             $result[] = $v;
         }
