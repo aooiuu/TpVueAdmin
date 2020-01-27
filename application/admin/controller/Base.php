@@ -16,6 +16,16 @@ class Base extends Controller
     protected $auth = null;
     protected $noNeedRight = [];
 
+    /**
+     * 快速搜索时执行查找的字段
+     */
+    protected $searchFields = 'id';
+
+    /**
+     * 是否是关联查询
+     */
+    protected $relationSearch = false;
+
     public function _initialize()
     {
         /**

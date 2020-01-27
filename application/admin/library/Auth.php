@@ -10,6 +10,7 @@ class Auth extends \fast\Auth
 {
     // 是否登录
     protected $logined = false;
+
     protected $config = [
         'auth_on' => 1, // 权限开关
         'auth_type' => 1, // 认证方式，1为实时认证；2为登录认证。

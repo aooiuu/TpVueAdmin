@@ -47,7 +47,6 @@ class Admin extends Base
             'total' => $this->model->count(),
             'rows' => $admin,
         ];
-
         return $this->result($result, 0);
     }
 

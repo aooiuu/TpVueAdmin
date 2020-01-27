@@ -1,0 +1,4 @@
+@url = http://admin5.test/admin/url_info
+
+### index
+POST {{url}}/index
