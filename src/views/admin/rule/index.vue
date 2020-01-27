@@ -35,9 +35,7 @@
       <el-table-column prop="id" label="ID" align="center" width="60" />
       <el-table-column prop="pid" label="父级" align="center" width="60" />
       <el-table-column prop="title" label="标题" align="center">
-        <p slot-scope="{row}" style="text-align: left;">
-          {{ (row.text + (row.text ? ' ' : '' ) + row.title) }}
-        </p>
+        <p slot-scope="{row}" style="text-align: left;" v-html="((row.text + (row.text ? ' ' : '' ) + row.title)).replace(/ /g,'&nbsp;')" />
       </el-table-column>
       <el-table-column prop="name" label="规则" align="center" />
       <el-table-column prop="icon" label="图标" align="center" width="50">
@@ -97,6 +95,7 @@
 import { confirm } from '@/utils/messageBox'
 import { toTree, reverseTree, toTreeArr } from '@/utils/tree'
 export default {
+  name: 'AdminRule',
   components: {
     Add: () => import('./add'),
     Edit: () => import('./edit')
@@ -182,6 +181,7 @@ export default {
           const { total, rows } = data
           this.table.total = total
           this.table.data = reverseTree(toTreeArr(toTree(rows)))
+          console.log('this.table.data', this.table.data)
         }
       } catch (error) {
         this.$message({

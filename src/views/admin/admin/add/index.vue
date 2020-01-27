@@ -4,11 +4,13 @@
       <el-form-item label="用户组">
         <el-select v-model="form.data.group" multiple placeholder="请选择" style="width:100%;">
           <el-option
-            v-for="item in form.group.options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
+            v-for="options in form.group.options"
+            :key="options.value"
+            :value="options.value"
+            :label="options.label"
+          >
+            <span style="float: left" v-html="options.label.replace(/ /g,'&nbsp;')" />
+          </el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="用户名">
@@ -126,8 +128,3 @@ export default {
 }
 </script>
 
-<style>
-.el-select-dropdown__item{
-  white-space: pre;
-}
-</style>

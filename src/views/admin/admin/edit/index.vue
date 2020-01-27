@@ -6,9 +6,11 @@
           <el-option
             v-for="options in form.group.options"
             :key="options.value"
-            :label="options.label"
             :value="options.value"
-          />
+            :label="options.label"
+          >
+            <span style="float: left" v-html="options.label.replace(/ /g,'&nbsp;')" />
+          </el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="用户名">
@@ -134,9 +136,3 @@ export default {
   }
 }
 </script>
-
-<style>
-.el-select-dropdown__item{
-  white-space: pre;
-}
-</style>

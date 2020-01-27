@@ -43,7 +43,7 @@ export function buildGroupPidTree(data) {
     },
     ...item
   }))
-  return buildPidTreeChildren(toTree(newList, {
+  return toTreeArr(toTree(newList, {
     id: 'id',
     pid: 'pid'
   }))

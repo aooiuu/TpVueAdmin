@@ -25,9 +25,7 @@
       <el-table-column prop="id" label="ID" align="center" width="60" />
       <el-table-column prop="pid" label="父级" align="center" width="80" />
       <el-table-column prop="name" label="角色组" align="center">
-        <p slot-scope="{row}" style="text-align: left;">
-          {{ (row.text + (row.text ? ' ' : '' ) + row.name) }}
-        </p>
+        <p slot-scope="{row}" style="text-align: left;" v-html="((row.text + (row.text ? ' ' : '' ) + row.name)).replace(/ /g,'&nbsp;')" />
       </el-table-column>
       <el-table-column prop="status" label="状态" align="center" width="80">
         <el-tag slot-scope="{row}" :type="row.status === 'normal' ? 'success' : 'danger'">
@@ -55,6 +53,7 @@ import { confirm } from '@/utils/messageBox'
 import { toTree, reverseTree, toTreeArr } from '@/utils/tree'
 
 export default {
+  name: 'AdminAuthGroup',
   components: {
     Add: () => import('./add'),
     Edit: () => import('./edit')

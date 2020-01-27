@@ -9,9 +9,11 @@
           <el-option
             v-for="options in form.pid.options"
             :key="options.value"
-            :label="options.label"
             :value="options.value"
-          />
+            :label="options.label"
+          >
+            <span style="float: left" v-html="options.label.replace(/ /g,'&nbsp;')" />
+          </el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="标题">
@@ -109,14 +111,18 @@ export default {
       if (!value) {
         return
       }
-      this.form.pid.options = buildRulePidTree(this.list).map(e => {
+      console.log('this.list:', this.list)
+      this.form.pid.options = buildRulePidTree(this.list.concat([{
+        id: 0,
+        pid: -1,
+        title: '无'
+      }])).map(e => {
         e.label = e.text + e.label
         return e
       })
     }
   },
   mounted() {
-    console.log('this.list:', this.list)
   },
   methods: {
     handleClipboard(item) {

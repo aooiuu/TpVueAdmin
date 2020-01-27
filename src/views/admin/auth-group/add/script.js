@@ -18,15 +18,15 @@ export default {
   data() {
     return {
       treeIsexpand: false,
+      treeLoading: false,
       form: {
         data: {
-          pid: 0,
+          pid: null,
           name: '',
           rules: []
         },
         pid: {
-          options: [],
-          value: [0]
+          options: []
         }
       },
       tree: {
@@ -49,13 +49,16 @@ export default {
       if (!value) {
         return
       }
-      this.form.pid.options = buildGroupPidTree(this.list)
-      this.form.pid.value = [0]
+      this.form.pid.options = buildGroupPidTree(this.list).map(e => ({
+        label: e.text + ' ' + e.name,
+        value: e.id
+      }))
       this.getRulesTree()
     }
   },
   methods: {
     async getRulesTree(id) {
+      this.treeLoading = true
       try {
         const { code, msg, data } = await getRules(id)
         if (code === 0) {
@@ -74,11 +77,10 @@ export default {
       } catch (error) {
         console.warn(error)
       }
+      this.treeLoading = false
     },
     pidOnChange(value) {
-      this.form.pid.value = value
-      this.form.data.pid = value[value.length - 1]
-      this.getRulesTree(this.form.data.pid === 0 ? undefined : this.form.data.pid)
+      this.getRulesTree(value === 0 ? undefined : value)
     },
     async save() {
       this.form.data.rules = this.$refs.treeX.getCheckedKeys()

@@ -60,6 +60,7 @@
 <script>
 import { confirm } from '@/utils/messageBox'
 export default {
+  name: 'AdminAdmin',
   components: {
     Add: () => import('./add'),
     Edit: () => import('./edit')
