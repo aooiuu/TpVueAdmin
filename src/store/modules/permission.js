@@ -35,7 +35,7 @@ export function filterAsyncRoutes(routes, roles) {
   return res
 }
 // 把后端的 component 文本，转换成 组件
-export function getAsyncComponent(_item) {
+export function getAsyncComponent(_item, dep = 0) {
   const item = {}
   _item.path && (item.path = '/' + _item.path)
   _item.name && (item.name = _item.name)
@@ -46,10 +46,11 @@ export function getAsyncComponent(_item) {
     item.children = _item.children
     item.alwaysShow = true
   }
-   // 如果有子级菜单
-  let _component = 'layout'
+  // 多级菜单避免重复 layout
+  let _component = dep === 0 ? 'layout' : 'router-view'
+  // 如果有子级菜单
   if (item.children) {
-    item.children = item.children.map(children => getAsyncComponent(children))
+    item.children = item.children.map(children => getAsyncComponent(children, dep + 1))
   } else {
      _component = item.component
   }
