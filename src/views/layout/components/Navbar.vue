@@ -1,7 +1,26 @@
 <template>
   <div class="navbar">
-    <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
-
+    <hamburger
+      id="hamburger-container"
+      :is-active="sidebar.opened"
+      class="hamburger-container"
+      @toggleClick="toggleSideBar"
+    />
+    <div
+      class="setting-panel-mask"
+      :class="{show: settingShow}"
+      @click="settingShow = false"
+    >
+      <div class="setting-panel">
+        <Settings />
+        <el-button
+          style="display: block; margin:0 auto;"
+          @click="settingShow = false"
+        >
+          返回
+        </el-button>
+      </div>
+    </div>
     <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
 
     <div class="right-menu">
@@ -12,16 +31,18 @@
 
         <screenfull id="screenfull" class="right-menu-item hover-effect" />
 
-        <el-tooltip content="Global Size" effect="dark" placement="bottom">
+        <!-- <el-tooltip content="Global Size" effect="dark" placement="bottom">
           <size-select id="size-select" class="right-menu-item hover-effect" />
-        </el-tooltip>
-
+        </el-tooltip> -->
+        <div class="right-menu-item hover-effect" @click="settingShow = true">
+          <svg-icon icon-class="cog-solid" />
+        </div>
       </template>
 
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
           <svg-icon icon-class="user" class="user-avatar" />
-          <!-- <img :src="avatar + '?imageView2/1/w/80/h/80'" class="user-avatar" /> -->
+          {{ name }}
         </div>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item>
@@ -42,23 +63,28 @@ import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 import ErrorLog from '@/components/ErrorLog'
 import Screenfull from '@/components/Screenfull'
-import SizeSelect from '@/components/SizeSelect'
 import Search from '@/components/HeaderSearch'
-
+import Settings from './Settings'
 export default {
   components: {
-    Breadcrumb,
+     Breadcrumb,
     Hamburger,
     ErrorLog,
     Screenfull,
-    SizeSelect,
-    Search
+    Search,
+    Settings
+  },
+  data() {
+    return {
+      settingShow: false
+    }
   },
   computed: {
     ...mapGetters([
       'sidebar',
       'avatar',
-      'device'
+      'device',
+      'name'
     ])
   },
   methods: {
@@ -94,11 +120,37 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.setting-panel-mask{
+      position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.6);
+    z-index: 999;
+    visibility: hidden;
+    &.show {
+     visibility: visible;
+     .setting-panel {
+      right: 0;
+     }
+    }
+    .setting-panel {
+      right: -300px;
+      width: 300px;
+      transition: all 0.3s;
+      position: fixed;
+      background-color: #fff;
+      top: 0;
+      bottom: 0;
+    }
+}
+
 .navbar {
   height: 50px;
   overflow: hidden;
-  position: relative;
   background: #fff;
+  position: relative;
   box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
 
   .hamburger-container {
@@ -146,23 +198,32 @@ export default {
 
         &:hover {
           background: rgba(0, 0, 0, 0.025);
+
         }
+
+      }
+
+      >>> .svg-icon {
+        transform: rotate(0);
+        transition: all .8s;
+      }
+
+     >>> .svg-icon:hover{
+        transform: rotate(360deg);
       }
     }
 
     .avatar-container {
-      margin-right: 30px;
+      margin-right: 10px;
 
       .avatar-wrapper {
-        margin-top: 5px;
         position: relative;
-
+        font-size: 18px;
         .user-avatar {
           cursor: pointer;
-          width: 40px;
-          height: 40px;
+          width: 1em;
+          height:  1em;
           border-radius: 10px;
-          padding: 10px;
         }
 
         .el-icon-caret-bottom {

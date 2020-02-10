@@ -1,6 +1,6 @@
 <template>
   <el-dialog :visible.sync="showEx" :title="title" :close-on-click-modal="false">
-    <el-form :model="form.data" label-position="left" label-width="70px" size="small">
+    <el-form :model="form.data" label-position="left" label-width="70px" size="mini">
       <el-form-item label="是否菜单">
         <el-switch v-model="form.data.ismenu" :active-value="1" :inactive-value="0" />
       </el-form-item>
@@ -23,7 +23,7 @@
         <el-input v-model="form.data.name" placeholder="目录名/控制器名/方法名" />
       </el-form-item>
       <el-form-item label="图标">
-        <el-button size="small" @click="iconsShow = !iconsShow">
+        <el-button size="mini" @click="iconsShow = !iconsShow">
           <svg-icon v-if="form.data.icon" :icon-class="form.data.icon" />
           <span v-else>无</span>
         </el-button>
@@ -44,10 +44,10 @@
     </el-form>
     <!-- footer -->
     <div slot="footer" class="dialog-footer">
-      <el-button size="small" @click="showEx = false">
+      <el-button size="mini" @click="showEx = false">
         取消
       </el-button>
-      <el-button type="primary" size="small" @click="save">
+      <el-button type="primary" size="mini" @click="save">
         保存
       </el-button>
     </div>

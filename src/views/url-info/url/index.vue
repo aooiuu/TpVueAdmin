@@ -3,23 +3,23 @@
     <!-- 弹窗 -->
     <!-- 工具栏 -->
     <div class="filter-container">
-      <el-button class="filter-item" size="small" @click="refresh">刷新</el-button>
-      <el-input v-model="table.search" placeholder="标题" style="width: 200px;" class="filter-item" size="small" />
-      <el-button class="filter-item" type="primary" size="small">
+      <el-button class="filter-item" size="mini" @click="refresh">刷新</el-button>
+      <el-input v-model="table.search" placeholder="标题" style="width: 200px;" class="filter-item" size="mini" />
+      <el-button class="filter-item" type="primary" size="mini">
         <svg-icon icon-class="search-solid" />
         搜索
       </el-button>
-      <el-button class="filter-item" type="primary" size="small" @click="Add.show = true">
+      <el-button class="filter-item" type="primary" size="mini" @click="Add.show = true">
         <svg-icon icon-class="plus-solid" />
         添加
       </el-button>
-      <el-button class="filter-item" type="primary" size="small">
+      <el-button class="filter-item" type="primary" size="mini">
         <svg-icon icon-class="file-download-solid" />
         导出
       </el-button>
     </div>
     <!-- 表格 -->
-    <el-table v-loading="table.loding" stripe :data="table.data" style="width: 100%" border fit highlight-current-row size="small">
+    <el-table v-loading="table.loding" stripe :data="table.data" style="width: 100%" border fit highlight-current-row size="mini">
       <el-table-column prop="id" label="ID" align="center" width="100" />
       <el-table-column prop="url_num" label="URLID" align="center" width="100" />
       <el-table-column prop="url_str" label="URL" align="center">

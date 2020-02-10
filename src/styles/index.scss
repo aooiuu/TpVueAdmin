@@ -1,16 +1,17 @@
-@import './variables.scss';
-@import './mixin.scss';
-@import './transition.scss';
-@import './element-ui.scss';
-@import './sidebar.scss';
-@import './btn.scss';
+@import "./variables.scss";
+@import "./mixin.scss";
+@import "./transition.scss";
+@import "./element-ui.scss";
+@import "./sidebar.scss";
+@import "./btn.scss";
 
 body {
   height: 100%;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
+  font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB,
+    Microsoft YaHei, Arial, sans-serif;
 }
 
 label {
@@ -104,7 +105,8 @@ aside {
   display: block;
   line-height: 32px;
   font-size: 16px;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   color: #2c3e50;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -134,7 +136,7 @@ aside {
 }
 
 .text-center {
-  text-align: center
+  text-align: center;
 }
 
 .sub-navbar {
@@ -145,7 +147,13 @@ aside {
   text-align: right;
   padding-right: 20px;
   transition: 600ms ease position;
-  background: linear-gradient(90deg, rgba(32, 182, 249, 1) 0%, rgba(32, 182, 249, 1) 0%, rgba(33, 120, 241, 1) 100%, rgba(33, 120, 241, 1) 100%);
+  background: linear-gradient(
+    90deg,
+    rgba(32, 182, 249, 1) 0%,
+    rgba(32, 182, 249, 1) 0%,
+    rgba(33, 120, 241, 1) 100%,
+    rgba(33, 120, 241, 1) 100%
+  );
 
   .subtitle {
     font-size: 20px;
@@ -172,8 +180,6 @@ aside {
 }
 
 .filter-container {
-  padding-bottom: 10px;
-
   .filter-item {
     display: inline-block;
     vertical-align: middle;
@@ -190,10 +196,58 @@ aside {
   z-index: 1000 !important;
 }
 
-// 表格的按钮
-.btn-icon {
-  padding: 5px;
+// --
+
+.el-table {
+  font-size: 12px !important;
 }
-.btn-icon+.btn-icon {
-  margin-left: 3px;
+.el-table th {
+  display: table-cell !important;
+}
+
+.el-table__row {
+  td:not(.is-hidden):last-child {
+    right: -1px !important;
+  }
+}
+.el-table td,
+.el-table th {
+  padding: 5px 0 !important;
+}
+.el-table .cell {
+  padding-left: 5px !important;
+  padding-right: 5px !important;
+}
+td .el-button + .el-button {
+  margin-left: 0 !important;
+}
+// .el-button--small,
+// .el-button--small.is-round {
+//   padding: 5px 5px;
+// }
+// -------
+.el-dialog {
+  background: transparent !important;
+  .el-dialog__header {
+    background: #409eff !important;
+    border-radius: 10px 10px 0 0 !important;
+    overflow: hidden !important;
+    .el-dialog__headerbtn,
+    .el-dialog__close,
+    .el-dialog__title {
+      color: #fff !important;
+    }
+  }
+  .el-dialog__body {
+    background: #fff !important;
+  }
+  .el-dialog__footer {
+    background: #fff !important;
+    border-top: solid 1px rgba(0, 0, 0, 0.1) !important;
+    border-radius: 0 0 10px 10px !important;
+  }
+}
+
+.btn-mini {
+  padding: 5px !important;
 }

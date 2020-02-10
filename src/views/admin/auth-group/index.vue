@@ -5,23 +5,23 @@
     <Edit :show="Edit.show" title="编辑" :item="item" @hide="Edit.show = false" />
     <!-- 工具栏 -->
     <div class="filter-container">
-      <el-button class="filter-item" size="small" @click="refresh">刷新</el-button>
-      <el-input placeholder="标题" style="width: 200px;" class="filter-item" size="small" />
-      <el-button class="filter-item" type="primary" size="small">
+      <el-button class="filter-item" size="mini" @click="refresh">刷新</el-button>
+      <el-input placeholder="标题" style="width: 200px;" class="filter-item" size="mini" />
+      <el-button class="filter-item" type="primary" size="mini">
         <svg-icon icon-class="search-solid" />
         搜索
       </el-button>
-      <el-button class="filter-item" type="primary" size="small" @click="Add.show = true">
+      <el-button class="filter-item" type="primary" size="mini" @click="Add.show = true">
         <svg-icon icon-class="plus-solid" />
         添加
       </el-button>
-      <el-button class="filter-item" type="primary" size="small">
+      <el-button class="filter-item" type="primary" size="mini">
         <svg-icon icon-class="file-download-solid" />
         导出
       </el-button>
     </div>
     <!-- 表格 -->
-    <el-table v-loading="table.loding" stripe :data="table.data" style="width: 100%" border fit highlight-current-row size="small">
+    <el-table v-loading="table.loding" stripe :data="table.data" style="width: 100%" border fit highlight-current-row size="mini">
       <el-table-column prop="id" label="ID" align="center" width="60" />
       <el-table-column prop="pid" label="父级" align="center" width="80" />
       <el-table-column prop="name" label="角色组" align="center">
@@ -36,10 +36,10 @@
       <!-- 操作区域 -->
       <el-table-column label="操作" align="center" show-overflow-tooltip fixed="right" width="80">
         <template slot-scope="{row}">
-          <el-button title="编辑" class="btn-icon" type="primary" size="small" @click="(item = row) && (Edit.show = true)">
+          <el-button title="编辑" class="btn-mini" type="primary" size="mini" @click="(item = row) && (Edit.show = true)">
             <svg-icon icon-class="pencil-alt-solid" />
           </el-button>
-          <el-button title="删除" class="btn-icon" type="danger" size="small" @click="del(row)">
+          <el-button title="删除" class="btn-mini" type="danger" size="mini" @click="del(row)">
             <svg-icon icon-class="trash-alt-solid" />
           </el-button>
         </template>

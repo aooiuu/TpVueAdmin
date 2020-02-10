@@ -1,6 +1,6 @@
 <template>
   <el-dialog :visible.sync="showEx" :title="title" :close-on-click-modal="false">
-    <el-form :model="form.data" label-position="left" label-width="70px" size="small">
+    <el-form :model="form.data" label-position="left" label-width="70px" size="mini">
       <el-form-item label="父级">
         <el-select v-model="form.data.pid" placeholder="请选择" style="width:100%;" @change="pidOnChange">
           <el-option
@@ -30,10 +30,10 @@
     </el-form>
     <!-- footer -->
     <div slot="footer" class="dialog-footer">
-      <el-button size="small" @click="$emit('hide')">
+      <el-button size="mini" @click="$emit('hide')">
         取消
       </el-button>
-      <el-button type="primary" size="small" @click="save">
+      <el-button type="primary" size="mini" @click="save">
         保存
       </el-button>
     </div>

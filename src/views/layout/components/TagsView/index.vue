@@ -22,10 +22,10 @@
     </div>
 
     <ul v-show="visible" :style="{left:left+'px',top:top+'px'}" class="contextmenu">
-      <li @click="refreshSelectedTag(selectedTag)">刷新</li>
-      <li v-if="!isAffix(selectedTag)" @click="closeSelectedTag(selectedTag)">关闭</li>
-      <li @click="closeOthersTags">关闭其他</li>
-      <li @click="closeAllTags(selectedTag)">关闭全部</li>
+      <li @click="refreshSelectedTag(selectedTag)">Refresh</li>
+      <li v-if="!isAffix(selectedTag)" @click="closeSelectedTag(selectedTag)">Close</li>
+      <li @click="closeOthersTags">Close Others</li>
+      <li @click="closeAllTags(selectedTag)">Close All</li>
     </ul>
   </div>
 </template>
@@ -238,25 +238,29 @@ export default {
       cursor: pointer;
       height: 34px;
       line-height: 34px;
-      border: 1px solid #f4f8ff;
-      color: #495060;
+      border: 1px solid rgba(0, 0, 0, .03);
+      color: #909399;
       background: #fff;
       padding: 0 8px;
       font-size: 12px;
-      &.active {
-        background-color: #42b983;
-        color: #fff;
-        border-color: #42b983;
-        &::before {
+      padding-left: 16px;
+      &::before{
           content: '';
-          background: #fff;
-          display: inline-block;
-          width: 8px;
-          height: 8px;
-          border-radius: 50%;
-          position: relative;
-          margin-right: 2px;
-        }
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 0;
+          transition: all .3s;
+          background-color: #1682e6;
+          border: none;
+          height: 2px;
+      }
+      &.active {
+        color: #1682e6;
+      }
+      &.active::before,
+      &:hover::before{
+        width: 100%;
       }
     }
   }
@@ -297,7 +301,8 @@ export default {
       transition: all .3s cubic-bezier(.645, .045, .355, 1);
       transform-origin: 100% 50%;
       &:before {
-        transform: scale(.6);
+        transition: all .3s cubic-bezier(.645, .045, .355, 1);
+        transform: scale(0);
         display: inline-block;
         vertical-align: -3px;
       }
@@ -306,6 +311,9 @@ export default {
         color: #fff;
       }
     }
+     &:hover .el-icon-close:before{
+        transform: scale(.9);
+      }
   }
 }
 </style>

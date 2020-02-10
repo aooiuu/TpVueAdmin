@@ -5,17 +5,17 @@
     <Edit :show="Edit.show" title="编辑" :list="table.data" :item="item" @hide="Edit.show = false; refresh()" />
     <!-- 工具栏 -->
     <div class="filter-container">
-      <el-button class="filter-item" size="small" @click="refresh">刷新</el-button>
-      <el-input placeholder="标题" style="width: 200px;" class="filter-item" size="small" />
-      <el-button class="filter-item" type="primary" size="small">
+      <el-button class="filter-item" size="mini" @click="refresh">刷新</el-button>
+      <el-input placeholder="标题" style="width: 200px;" class="filter-item" size="mini" />
+      <el-button class="filter-item" type="primary" size="mini">
         <svg-icon icon-class="search-solid" />
         搜索
       </el-button>
-      <el-button class="filter-item" type="primary" size="small" @click="Add.show = true">
+      <el-button class="filter-item" type="primary" size="mini" @click="Add.show = true">
         <svg-icon icon-class="plus-solid" />
         添加
       </el-button>
-      <el-button class="filter-item" type="primary" size="small">
+      <el-button class="filter-item" type="primary" size="mini">
         <svg-icon icon-class="file-download-solid" />
         导出
       </el-button>
@@ -29,7 +29,7 @@
       border
       fit
       highlight-current-row
-      size="small"
+      size="mini"
       :row-style="({row, rowIndex})=> ({color: row.ismenu ? '#1890ff' : '#606266'})"
     >
       <el-table-column prop="id" label="ID" align="center" width="60" />
@@ -69,18 +69,18 @@
         <template slot-scope="{row}">
           <el-button
             title="编辑"
-            class="btn-icon"
+            class="btn-mini"
             type="primary"
-            size="small"
+            size="mini"
             @click="edit(row)"
           >
             <svg-icon icon-class="pencil-alt-solid" />
           </el-button>
           <el-button
             title="删除"
-            class="btn-icon"
+            class="btn-mini"
             type="danger"
-            size="small"
+            size="mini"
             @click="del(row)"
           >
             <svg-icon icon-class="trash-alt-solid" />
