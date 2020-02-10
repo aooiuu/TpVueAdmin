@@ -14,6 +14,8 @@ const name = defaultSettings.title || 'vue Element Admin' // page title
 // You can change the port by the following method:
 // port = 9527 npm run dev OR npm run dev --port = 9527
 const port = process.env.port || process.env.npm_config_port || 9527 // dev port
+const VUE_APP_BASE_API = process.env.VUE_APP_BASE_API || '/'
+const PROXY_TARGET = process.env.PROXY_TARGET || '/'
 
 // All configuration item explanations can be find in https://cli.vuejs.org/config/
 module.exports = {
@@ -37,11 +39,11 @@ module.exports = {
       errors: true
     },
     proxy: {
-      [process.env.VUE_APP_BASE_API]: {
-        target: 'http://admin5.test',
+      [VUE_APP_BASE_API]: {
+        target: PROXY_TARGET,
         changeOrigin: true,
         pathRewrite: {
-          ['^' + process.env.VUE_APP_BASE_API]: ''
+          ['^' + VUE_APP_BASE_API]: ''
         }
       }
     }

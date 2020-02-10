@@ -22,7 +22,11 @@
     <el-table v-loading="table.loding" stripe :data="table.data" style="width: 100%" border fit highlight-current-row size="small">
       <el-table-column prop="id" label="ID" align="center" width="100" />
       <el-table-column prop="url_num" label="URLID" align="center" width="100" />
-      <el-table-column prop="url_str" label="URL" align="center" />
+      <el-table-column prop="url_str" label="URL" align="center">
+        <template v-slot="{row}">
+          <a :href="row.url_str">{{ row.url_str }}</a>
+        </template>
+      </el-table-column>
       <el-table-column prop="title" label="title" align="center" />
       <el-table-column prop="status" label="status" align="center" />
       <!-- 操作区域 -->
