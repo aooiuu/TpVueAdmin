@@ -67,7 +67,7 @@ import Search from '@/components/HeaderSearch'
 import Settings from './Settings'
 export default {
   components: {
-     Breadcrumb,
+    Breadcrumb,
     Hamburger,
     ErrorLog,
     Screenfull,

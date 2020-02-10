@@ -95,7 +95,7 @@ export default {
         data: this.form.data
       })
       if (code !== 0) {
-          this.$message({
+        this.$message({
           type: 'error',
           message: msg
         })

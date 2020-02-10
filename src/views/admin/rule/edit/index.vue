@@ -122,7 +122,7 @@ export default {
         e.label = e.text + e.label
         return e
       })
-     console.table(JSON.parse(JSON.stringify(this.form.data)))
+      console.table(JSON.parse(JSON.stringify(this.form.data)))
     }
   },
   mounted() {
