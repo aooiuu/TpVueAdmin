@@ -10,12 +10,19 @@ export default {
 }
 </script>
 
-<style>
-html, body, p {
+<style lang="css">
+.el-dialog__body {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+.el-button+.el-button{
+  margin-left: 0;
+}
+.tag-group .el-tag+.el-tag {
+  margin-left: 5px;
+}
+p {
   margin: 0;
   padding: 0;
-}
-.el-table--small th, .el-table--small td{
-padding:  5px 0;
 }
 </style>
