@@ -41,7 +41,6 @@
 
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
-          <svg-icon icon-class="user" class="user-avatar" />
           {{ name }}
         </div>
         <el-dropdown-menu slot="dropdown">
