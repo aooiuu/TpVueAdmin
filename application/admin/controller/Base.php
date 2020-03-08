@@ -17,6 +17,12 @@ class Base extends Controller
     protected $noNeedRight = [];
 
     /**
+     * 模型对象
+     * @var \think\Model
+     */
+    protected $model = null;
+
+    /**
      * 快速搜索时执行查找的字段
      */
     protected $searchFields = 'id';
@@ -25,6 +31,8 @@ class Base extends Controller
      * 是否是关联查询
      */
     protected $relationSearch = false;
+
+    use  \app\admin\library\Backend;
 
     public function _initialize()
     {

@@ -13,7 +13,19 @@ trait Backend
    */
   public function index()
   {
-    $this->result([], 0);
+    list($where, $sort, $order, $offset, $limit) = $this->buildparams();
+    $total = $this->model
+      ->where($where)
+      ->order($sort, $order)
+      ->count();
+    $list = $this->model
+      ->where($where)
+      ->order($sort, $order)
+      ->limit($offset, $limit)
+      ->select();
+    $list = collection($list)->toArray();
+    $result = array("total" => $total, "rows" => $list);
+    $this->result($result, 0);
   }
   /**
    * 回收站
