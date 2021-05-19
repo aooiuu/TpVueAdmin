@@ -19,9 +19,12 @@ class AuthGroup extends Base
 
     public function index()
     {
+        // 取出当前管理员所拥有权限的分组
+        $this->childrenGroupIds = $this->auth->getChildrenGroupIds($this->auth->id, true);
+
         $result = [
             'total' => $this->model->count(),
-            'rows' => $this->model->select(),
+            'rows' => $this->model->where('id', 'in', $this->childrenGroupIds)->select(),
         ];
         return $this->result($result, 0);
     }
@@ -87,7 +90,6 @@ class AuthGroup extends Base
             return $this->result([], 0, '删除成功');
         } else {
             return $this->result([], 0, '删除失败：' . $this->model->getError());
-
         }
         // array_diff() // 其他参数如果全部不包含第一个参数的某成员，就返回这个成员
     }

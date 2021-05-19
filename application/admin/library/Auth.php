@@ -147,4 +147,46 @@ class Auth extends \fast\Auth
         return $groupIds;
     }
 
+    /**
+     * 取出当前管理员所拥有权限的分组
+     * @param boolean $withself 是否包含当前所在的分组
+     * @return array
+     */
+    public function getChildrenGroupIds($withself = false)
+    {
+        //取出当前管理员所有的分组
+        $groups = $this->getGroups();
+        $groupIds = [];
+        foreach ($groups as $k => $v) {
+            $groupIds[] = $v['id'];
+        }
+        $originGroupIds = $groupIds;
+        foreach ($groups as $k => $v) {
+            if (in_array($v['pid'], $originGroupIds)) {
+                $groupIds = array_diff($groupIds, [$v['id']]);
+                unset($groups[$k]);
+            }
+        }
+        // 取出所有分组
+        $groupList = \app\common\model\AuthGroup::where(['status' => 'normal'])->select();
+        $objList = [];
+        foreach ($groups as $k => $v) {
+            if ($v['rules'] === '*') {
+                $objList = $groupList;
+                break;
+            }
+            // 取出包含自己的所有子节点
+            $childrenList = \Tree::instance()->init($groupList)->getChildren($v['id'], true);
+            $obj = \Tree::instance()->init($childrenList)->getTreeArray($v['pid']);
+            $objList = array_merge($objList, \Tree::instance()->getTreeList($obj));
+        }
+        $childrenGroupIds = [];
+        foreach ($objList as $k => $v) {
+            $childrenGroupIds[] = $v['id'];
+        }
+        if (!$withself) {
+            $childrenGroupIds = array_diff($childrenGroupIds, $groupIds);
+        }
+        return $childrenGroupIds;
+    }
 }
