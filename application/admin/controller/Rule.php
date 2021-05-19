@@ -14,6 +14,10 @@ class Rule extends Base
     {
         parent::_initialize();
         $this->model = model('AuthRule');
+
+        if (!$this->auth->isSuperAdmin()) {
+            return $this->result([], 1, '仅超级管理员有此权限');
+        }
     }
 
     public function index()
