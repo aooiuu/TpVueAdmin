@@ -32,7 +32,10 @@ class Admin extends Base
             ];
         }
         // 取出所有用户
-        $admin = collection($this->model->select())->toArray();
+        // group_id -> auth_group -> auth_group_access -> admin
+        $this->childrenAdminIds = $this->auth->getChildrenAdminIds(true);
+        $admin = collection($this->model->where('id', 'in', $this->childrenAdminIds)->select())->toArray();
+
         // 给用户赋值关联数据
         foreach ($admin as $k => $v) {
             $admin[$k]['auth_group_access'] = [];

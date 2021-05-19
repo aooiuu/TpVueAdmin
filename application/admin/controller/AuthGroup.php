@@ -23,7 +23,7 @@ class AuthGroup extends Base
         $this->childrenGroupIds = $this->auth->getChildrenGroupIds($this->auth->id, true);
 
         $result = [
-            'total' => $this->model->count(),
+            'total' => $this->model->where('id', 'in', $this->childrenGroupIds)->count(),
             'rows' => $this->model->where('id', 'in', $this->childrenGroupIds)->select(),
         ];
         return $this->result($result, 0);

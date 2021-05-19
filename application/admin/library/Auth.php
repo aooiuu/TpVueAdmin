@@ -189,4 +189,34 @@ class Auth extends \fast\Auth
         }
         return $childrenGroupIds;
     }
+
+    /**
+     * 取出当前管理员所拥有权限的管理员
+     * @param boolean $withself 是否包含自身
+     * @return array
+     */
+    public function getChildrenAdminIds($withself = false)
+    {
+        $childrenAdminIds = [];
+        if (!$this->isSuperAdmin()) {
+            $groupIds = $this->getChildrenGroupIds(false);
+            $authGroupList = \app\common\model\AuthGroupAccess::field('uid,group_id')
+                ->where('group_id', 'in', $groupIds)
+                ->select();
+            foreach ($authGroupList as $k => $v) {
+                $childrenAdminIds[] = $v['uid'];
+            }
+        } else {
+            //超级管理员拥有所有人的权限
+            $childrenAdminIds = Admin::column('id');
+        }
+        if ($withself) {
+            if (!in_array($this->id, $childrenAdminIds)) {
+                $childrenAdminIds[] = $this->id;
+            }
+        } else {
+            $childrenAdminIds = array_diff($childrenAdminIds, [$this->id]);
+        }
+        return $childrenAdminIds;
+    }
 }
