@@ -10,10 +10,17 @@ class Admin extends Base
      */
     protected $model = null;
     protected $noNeedRight = [];
+
+    protected $childrenGroupIds = [];
+    protected $childrenAdminIds = [];
+
     public function _initialize()
     {
         parent::_initialize();
         $this->model = model('Admin');
+
+        $this->childrenAdminIds = $this->auth->getChildrenAdminIds(true);
+        $this->childrenGroupIds = $this->auth->getChildrenGroupIds(true);
     }
 
     /**
@@ -67,7 +74,9 @@ class Admin extends Base
         if ($result === false) {
             return $this->result($result, 2, $this->model->getError());
         }
-        // 保存分组
+
+        // 过滤不允许的组别,避免越权
+        $group = array_intersect($this->childrenGroupIds, $group);
         $groupData = [];
         foreach ($group as $value) {
             $groupData[] = [
@@ -75,6 +84,7 @@ class Admin extends Base
                 'group_id' => $value,
             ];
         }
+        // 保存分组
         model('AuthGroupAccess')->saveAll($groupData);
         return $this->result($params, 0, '操作成功');
     }
@@ -88,8 +98,12 @@ class Admin extends Base
         $model = $this->model->get(['id' => $params['id']]);
         unset($params['id']);
         if (!$model) {
-            return $this->result([], 2, '操作失败： 用户不存在');
+            return $this->result([], 2, '操作失败,用户不存在');
         }
+        if (!in_array($model->id, $this->childrenAdminIds)) {
+            return $this->result([], 2, '操作失败,权限不足');
+        }
+
         // 保存用户信息
         $result = $model->validate('Admin.edit')->save($params);
         if ($result === false) {
@@ -112,11 +126,27 @@ class Admin extends Base
     public function del()
     {
         $id = $this->request->param('id');
-        // 删除所有分组
-        $this->model->destroy($id);
-        $deleteIds = [$id];
-        // TODO: 删除子级的用户
-        model('AuthGroupAccess')->where('uid', 'in', $deleteIds)->delete();
-        return $this->result([], 0, '操作成功');
+        // 取出当前管理员所拥有权限的分组
+        $childrenGroupIds = $this->childrenGroupIds;
+        // 当前管理员的子级管理员
+        $adminList = $this->model->where('id', $id)->where('id', 'in', function ($query) use ($childrenGroupIds) {
+            // 避免越级删除
+            $query->name('auth_group_access')->where('group_id', 'in', $childrenGroupIds)->field('uid');
+        })->select();
+        if ($adminList) {
+            $deleteIds = [];
+            foreach ($adminList as $k => $v) {
+                $deleteIds[] = $v->id;
+            }
+            // 排除当前登录的管理员
+            $deleteIds = array_values(array_diff($deleteIds, [$this->auth->id]));
+            if ($deleteIds) {
+                $this->model->destroy($deleteIds);
+                // 删除角色组关键表数据
+                model('AuthGroupAccess')->where('uid', 'in', $deleteIds)->delete();
+                return $this->result([], 0, '操作成功');
+            }
+        }
+        return $this->result([], 2, '操作失败');
     }
 }
