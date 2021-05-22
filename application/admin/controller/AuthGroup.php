@@ -11,17 +11,19 @@ class AuthGroup extends Base
      * @var \app\common\model\AuthGroup
      */
     protected $model = null;
+    //当前登录管理员所有子组别
+    protected $childrenGroupIds = [];
+
     public function _initialize()
     {
         parent::_initialize();
         $this->model = model('AuthGroup');
+        // 取出当前管理员所拥有权限的分组
+        $this->childrenGroupIds = $this->auth->getChildrenGroupIds($this->auth->id, true);
     }
 
     public function index()
     {
-        // 取出当前管理员所拥有权限的分组
-        $this->childrenGroupIds = $this->auth->getChildrenGroupIds($this->auth->id, true);
-
         $result = [
             'total' => $this->model->where('id', 'in', $this->childrenGroupIds)->count(),
             'rows' => $this->model->where('id', 'in', $this->childrenGroupIds)->select(),
@@ -32,9 +34,22 @@ class AuthGroup extends Base
     public function add()
     {
         $params = $this->request->param();
-        if ($params['rules']) {
-            $params['rules'] = implode(',', $params['rules']);
+        if (!in_array($params['pid'], $this->childrenGroupIds)) {
+            $this->result([], 2, '没有权限添加此节点');
         }
+
+        // 当前登录账号拥有的节点数组
+        $currentrules = $this->auth->getRuleIds();
+        // 父节点数组
+        $parentmodel = model("AuthGroup")->get(['id' => $params['pid']]);
+        $parentrules = explode(',', $parentmodel->rules);
+
+        // 过滤父节点没有的权限
+        $params['rules'] = in_array('*', $parentrules) ? $params['rules'] : array_intersect($parentrules, $params['rules']);
+        // 过滤当前节点没有的权限
+        $params['rules'] = in_array('*', $currentrules) ? $params['rules'] : array_intersect($currentrules, $params['rules']);
+
+        $params['rules'] = implode(',', $params['rules']);
         $result = $this->model->validate('AuthGroup.add')->save($params);
         if ($result) {
             $this->result([], 0, '操作成功');
@@ -48,25 +63,31 @@ class AuthGroup extends Base
      */
     public function edit()
     {
-        // 判断当前修改的节点是否有权限修改
-        // $this->childrenGroupIds = $this->auth->getChildrenGroupIds(true);
-
-        // 多级权限管理
-        // 分配时不能超过最高层级
-        // 那就只搞一级
-
-        // id name rules
         $id = $this->request->param('id');
+        if (!in_array($id, $this->childrenGroupIds)) {
+            $this->result([], 2, '没有权限修改此节点');
+        }
+
         $rules = $this->request->param('rules/a');
         $name = $this->request->param('name');
         $row = $this->model->get(['id' => $id]);
         if (!$row) {
             $this->result([], 2, '角色组不存在');
         }
+
+        // 当前登录账号拥有的节点数组
+        $currentrules = $this->auth->getRuleIds();
+        // 父节点数组
+        $parentmodel = model("AuthGroup")->get(['id' => $row->pid]);
+        $parentrules = explode(',', $parentmodel->rules);
+
+        // 过滤父节点没有的权限
+        $rules = in_array('*', $parentrules) ? $rules : array_intersect($parentrules, $rules);
+        // 过滤当前节点没有的权限
+        $rules = in_array('*', $currentrules) ? $rules : array_intersect($currentrules, $rules);
+
         $params = [];
-        if ($rules) {
-            $params['rules'] = implode(',', $rules);
-        }
+        $params['rules'] = implode(',', $rules);
         if ($name) {
             $params['name'] = $name;
         }
@@ -74,24 +95,49 @@ class AuthGroup extends Base
         if ($result === false) {
             return $this->result($result, 2, $this->model->getError());
         }
-        return $this->result($params, 0, $result);
+        return $this->result($params, 0, '修改成功');
     }
 
+    /**
+     * 删除角色组
+     */
     public function del()
     {
-        // 当前组是否有子级
-        $id = $this->request->param('id');
-        $authGroup = $this->model->get($id);
-        $subAuthGroupCount = $this->model->where(['pid' => $authGroup->id])->count();
-        if ($subAuthGroupCount != 0) {
-            return $this->result([], 0, '当前管理组下存在其他管理组');
+        $ids = explode(',', $this->request->param('id'));
+        $grouplist = $this->auth->getGroups();
+        $group_ids = array_map(function ($group) {
+            return $group['id'];
+        }, $grouplist);
+        // 移除掉当前登录账号所在组别
+        $ids = array_diff($ids, $group_ids);
+
+
+        // 循环判断每一个组别是否可删除
+        $grouplist = $this->model->where('id', 'in', $ids)->select();
+        $groupaccessmodel = model('AuthGroupAccess');
+
+        foreach ($grouplist as $k => $v) {
+            $groupone = $groupaccessmodel->get(['group_id' => $v['id']]);
+            if ($groupone) {
+                // 当前组别下有管理员
+                $ids = array_diff($ids, [$v['id']]);
+                continue;
+            }
+            // 当前组别下有子组别
+            $groupone = $this->model->get(['pid' => $v['id']]);
+            if ($groupone) {
+                $ids = array_diff($ids, [$v['id']]);
+                continue;
+            }
         }
-        if ($authGroup->delete()) {
+        if (!$ids) {
+            return $this->result([], 2, '请先删除当前组别下的管理员和分组');
+        }
+
+        $count = $this->model->where('id', 'in', $ids)->delete();
+        if ($count) {
             return $this->result([], 0, '删除成功');
-        } else {
-            return $this->result([], 0, '删除失败：' . $this->model->getError());
         }
-        // array_diff() // 其他参数如果全部不包含第一个参数的某成员，就返回这个成员
     }
 
     /**
