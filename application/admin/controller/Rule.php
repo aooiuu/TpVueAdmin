@@ -68,7 +68,14 @@ class Rule extends Base
 
     public function asyncRoutes()
     {
-        $model = $this->model->where(['ismenu' => 1, 'id' => ['in', $this->auth->getRuleIds()]])->select();
+        $ids = $this->auth->getRuleIds();
+        if (in_array('*', $ids)) {
+            // 超级管理员
+            $model = $this->model->where(['ismenu' => 1])->select();
+        } else {
+            $model = $this->model->where(['ismenu' => 1, 'id' => ['in', $ids]])->select();
+        }
+
         $result = [];
         foreach ($model as $k => $v) {
             if (!$v['ismenu']) {
