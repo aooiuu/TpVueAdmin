@@ -52,11 +52,12 @@ export function getAsyncComponent(_item, dep = 0) {
   if (item.children) {
     item.children = item.children.map(children => getAsyncComponent(children, dep + 1))
   } else {
-     _component = item.component
+    _component = item.component
   }
   // 为了命名规范，把 `_` 路径映射到 `-`
   _component = _component.replace(/_/g, '-')
-  item.component = () => import(`@/views/${_component}`)
+  // item.component = () => import(`@/views/${_component}`)
+  item.component = resolve => require([`@/views/${_component}`], resolve)
   return item
 }
 // 从后端获取路由
@@ -80,7 +81,7 @@ const mutations = {
 
 const actions = {
   generateRoutes({ commit }, roles) {
-    return new Promise(async(resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       let asyncRoutes = []
       try {
         const asyncRoutesTree = toTree((await getAsyncRoutes()).data)

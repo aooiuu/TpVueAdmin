@@ -1,13 +1,30 @@
 <template>
   <div class="app-container admin_rule">
     <!-- 弹窗 -->
-    <Add :show="Add.show" title="添加" :list="table.data" @hide="Add.show = false; refresh()" />
-    <Edit :show="Edit.show" title="编辑" :list="table.data" :item="item" @hide="Edit.show = false; refresh()" />
+    <Add
+      :show="Add.show"
+      title="添加"
+      :list="table.data"
+      @hide="
+        Add.show = false
+        refresh()
+      "
+    />
+    <Edit
+      :show="Edit.show"
+      title="编辑"
+      :list="table.data"
+      :item="item"
+      @hide="
+        Edit.show = false
+        refresh()
+      "
+    />
     <!-- 工具栏 -->
     <div class="filter-container">
       <el-button class="filter-item" size="mini" @click="refresh">刷新</el-button>
-      <el-input placeholder="标题" style="width: 200px;" class="filter-item" size="mini" />
-      <el-button class="filter-item" type="primary" size="mini">
+      <el-input v-model="search.title" placeholder="标题" style="width: 200px;" class="filter-item" size="mini" />
+      <!-- <el-button class="filter-item" type="primary" size="mini">
         <svg-icon icon-class="search-solid" />
         搜索
       </el-button>
@@ -18,28 +35,28 @@
       <el-button class="filter-item" type="primary" size="mini">
         <svg-icon icon-class="file-download-solid" />
         导出
-      </el-button>
+      </el-button> -->
     </div>
     <!-- 表格 -->
     <el-table
       v-loading="table.loding"
       stripe
-      :data="table.data"
+      :data="tableData"
       style="width: 100%"
       border
       fit
       highlight-current-row
       size="mini"
-      :row-style="({row, rowIndex})=> ({color: row.ismenu ? '#1890ff' : '#606266'})"
+      :row-style="({ row, rowIndex }) => ({ color: row.ismenu ? '#1890ff' : '#606266' })"
     >
       <el-table-column prop="id" label="ID" align="center" width="60" />
       <el-table-column prop="pid" label="父级" align="center" width="60" />
       <el-table-column prop="title" label="标题" align="center">
-        <p slot-scope="{row}" style="text-align: left;" v-html="((row.text + (row.text ? ' ' : '' ) + row.title)).replace(/ /g,'&nbsp;')" />
+        <p slot-scope="{ row }" style="text-align: left;" v-html="(row.text + (row.text ? ' ' : '') + row.title).replace(/ /g, '&nbsp;')" />
       </el-table-column>
       <el-table-column prop="name" label="规则" align="center" />
       <el-table-column prop="icon" label="图标" align="center" width="50">
-        <template slot-scope="{row}">
+        <template slot-scope="{ row }">
           <svg-icon v-if="row.icon" :icon-class="row.icon" />
           <span v-else>无</span>
         </template>
@@ -50,39 +67,22 @@
         label="是否菜单"
         align="center"
         :filters="[{ text: '是', value: 1 }, { text: '不是', value: 0 }]"
-        :filter-method="(value, row)=>row.ismenu === value"
+        :filter-method="(value, row) => row.ismenu === value"
         filter-placement="bottom-end"
         width="100"
       >
-        <el-tag slot-scope="{row}" :type="row.ismenu === 1 ? 'success' : 'info'">
+        <el-tag slot-scope="{ row }" :type="row.ismenu === 1 ? 'success' : 'info'">
           {{ row.ismenu === 1 ? '是' : '否' }}
         </el-tag>
       </el-table-column>
+      <el-table-column prop="remark" label="备注" align="center" />
       <!-- 操作区域 -->
-      <el-table-column
-        label="操作"
-        align="center"
-        show-overflow-tooltip
-        fixed="right"
-        width="120"
-      >
-        <template slot-scope="{row}">
-          <el-button
-            title="编辑"
-            class="btn-mini"
-            type="primary"
-            size="mini"
-            @click="edit(row)"
-          >
+      <el-table-column label="操作" align="center" show-overflow-tooltip fixed="right" width="120">
+        <template slot-scope="{ row }">
+          <el-button title="编辑" class="btn-mini" type="primary" size="mini" @click="edit(row)">
             <svg-icon icon-class="pencil-alt-solid" />
           </el-button>
-          <el-button
-            title="删除"
-            class="btn-mini"
-            type="danger"
-            size="mini"
-            @click="del(row)"
-          >
+          <el-button title="删除" class="btn-mini" type="danger" size="mini" @click="del(row)">
             <svg-icon icon-class="trash-alt-solid" />
           </el-button>
         </template>
@@ -120,7 +120,18 @@ export default {
         limit: 10,
         filter: {},
         op: {}
+      },
+      search: {
+        title: ''
       }
+    }
+  },
+  computed: {
+    tableData() {
+      if (this.search.title) {
+        return this.table.data.filter(e => e.title.includes(this.search.title))
+      }
+      return this.table.data
     }
   },
   mounted() {
@@ -143,7 +154,8 @@ export default {
             method: 'POST',
             data: {
               id: item.id
-            }})
+            }
+          })
           this.$message({
             type: code !== 0 ? 'error' : 'success',
             message: msg
@@ -171,7 +183,8 @@ export default {
             limit: this.table.limit,
             filter: this.table.filter,
             op: this.table.op
-          }})
+          }
+        })
         if (code !== 0) {
           this.$message({
             type: 'info',
@@ -204,11 +217,11 @@ export default {
   left: 0;
   visibility: hidden;
   opacity: 0;
-  transition: all ease .2s;
+  transition: all ease 0.2s;
   z-index: 9;
   background-color: #fff;
-  border: solid 1px rgba(0,0,0,0.2);
-  box-shadow: 0 2px 12px 0 rgba(0,0,0,.3);
+  border: solid 1px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.3);
   padding: 5px;
 }
 .admin_rule .icons.show {
