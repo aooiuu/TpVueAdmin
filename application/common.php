@@ -19,3 +19,12 @@ function camelize($uncamelizedWords, $separator = '_')
   $uncamelizedWords = $separator . str_replace($separator, " ", strtolower($uncamelizedWords));
   return ucwords(ltrim(str_replace(" ", "", ucwords($uncamelizedWords)), $separator));
 }
+
+
+/**
+ * 生成随机字符串
+ */
+function randomStr($str = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', $len = 6)
+{
+  return substr(str_shuffle(str_repeat($str, ceil($len / strlen($str)))), 0, $len);
+}

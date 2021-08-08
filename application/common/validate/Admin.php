@@ -9,7 +9,7 @@ class Admin extends Base
      */
     protected $rule = [
         'username' => 'require|regex:\w{3,12}',
-        'password' => 'require',
+        'password' => 'require|regex:\S{32}',
         'nickname' => 'require',
     ];
 
@@ -19,11 +19,10 @@ class Admin extends Base
     protected $scene = [
         'add' => [
             'username' => 'require|regex:\w{3,12}|unique:admin',
+            'password' => 'require|regex:\S{32}',
             'nickname' => 'require',
-            'password' => 'require',
         ],
-        'edit' => [
-        ],
+        'edit' => [],
     ];
 
     /**

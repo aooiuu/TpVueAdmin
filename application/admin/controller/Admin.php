@@ -2,6 +2,8 @@
 
 namespace app\admin\controller;
 
+use think\Validate;
+
 class Admin extends Base
 {
 
@@ -70,6 +72,15 @@ class Admin extends Base
         $params = $this->request->param();
         $group = $params['group'];
         unset($params['group']);
+
+        if (!Validate::is($params['password'], '\S{6,16}')) {
+            return $this->result([], 2, '请输出长度6-16的密码');
+        }
+
+        // 加密密码
+        $params['salt'] = randomStr();
+        $params['password'] = md5(md5($params['password']) . $params['salt']);
+
         $result = $this->model->validate('Admin.add')->save($params);
         if ($result === false) {
             return $this->result($result, 2, $this->model->getError());
@@ -103,6 +114,10 @@ class Admin extends Base
         if (!in_array($model->id, $this->childrenAdminIds)) {
             return $this->result([], 2, '操作失败,权限不足');
         }
+
+        // 加密密码
+        $params['salt'] = randomStr();
+        $params['password'] = md5(md5($params['password']) . $params['salt']);
 
         // 保存用户信息
         $result = $model->validate('Admin.edit')->save($params);

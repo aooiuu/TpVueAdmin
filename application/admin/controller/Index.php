@@ -43,7 +43,8 @@ class Index extends Base
         if (!$admin) {
             $this->result([], 2, '用户不存在');
         }
-        if ($admin->password != $password) {
+
+        if ($admin->password != md5(md5($password) . $admin->salt)) {
             $this->result([], 2, '密码错误');
         }
         $admin->accesstoken = 'accesstoken';
