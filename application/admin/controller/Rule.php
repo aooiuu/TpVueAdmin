@@ -82,8 +82,8 @@ class Rule extends Base
                 continue;
             }
             $v['path'] = $v['name'];
-            $v['name'] = $v['name'];
             $v['component'] = $v['name'];
+            $v['name'] = camelize(str_replace('/', '_', $v['name']));
             $v['meta'] = [
                 'title' => $v['title'],
                 'icon' => $v['icon'],

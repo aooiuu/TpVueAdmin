@@ -10,3 +10,12 @@
 // +----------------------------------------------------------------------
 
 // 应用公共文件
+
+/**
+ * 转大驼峰
+ */
+function camelize($uncamelizedWords, $separator = '_')
+{
+  $uncamelizedWords = $separator . str_replace($separator, " ", strtolower($uncamelizedWords));
+  return ucwords(ltrim(str_replace(" ", "", ucwords($uncamelizedWords)), $separator));
+}
