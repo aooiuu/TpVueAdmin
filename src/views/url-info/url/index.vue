@@ -23,7 +23,7 @@
       <el-table-column prop="id" label="ID" align="center" width="100" />
       <el-table-column prop="url_num" label="URLID" align="center" width="100" />
       <el-table-column prop="url_str" label="URL" align="center">
-        <template v-slot="{row}">
+        <template v-slot="{ row }">
           <a :href="row.url_str">{{ row.url_str }}</a>
         </template>
       </el-table-column>
@@ -32,7 +32,7 @@
       <!-- 操作区域 -->
     </el-table>
     <!-- 分页 -->
-    <pagination v-show="table.total>0" :total="table.total" :page.sync="page" :limit.sync="table.limit" @pagination="refresh" />
+    <pagination v-show="table.total > 0" :total="table.total" :page.sync="page" :limit.sync="table.limit" @pagination="refresh" />
   </div>
 </template>
 
@@ -69,7 +69,7 @@ export default {
     }
   },
   mounted() {
-    this.refresh()
+    // this.refresh()
   },
   methods: {
     async refresh() {
@@ -86,7 +86,8 @@ export default {
             limit: this.table.limit,
             filter: this.table.filter,
             op: this.table.op
-          }})
+          }
+        })
         if (code !== 0) {
           this.$message({
             type: 'info',
