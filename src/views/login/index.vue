@@ -13,14 +13,7 @@
       <li />
     </ul>
 
-    <el-form
-      ref="loginForm"
-      :model="loginForm"
-      :rules="loginRules"
-      class="login-form"
-      auto-complete="on"
-      label-position="left"
-    >
+    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
       <div class="title-container">
         <h3 class="title">后台登录</h3>
       </div>
@@ -29,15 +22,7 @@
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
-        <el-input
-          ref="username"
-          v-model="loginForm.username"
-          placeholder="用户名"
-          name="username"
-          type="text"
-          tabindex="1"
-          auto-complete="on"
-        />
+        <el-input ref="username" v-model="loginForm.username" placeholder="用户名" name="username" type="text" tabindex="1" auto-complete="on" />
       </el-form-item>
 
       <el-form-item prop="password">
@@ -60,12 +45,7 @@
         </span>
       </el-form-item>
 
-      <el-button
-        :loading="loading"
-        type="primary"
-        style="width:100%;margin-bottom:30px;"
-        @click.native.prevent="handleLogin"
-      >
+      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">
         登录
       </el-button>
       <div class="tips">
@@ -97,8 +77,8 @@ export default {
     }
     return {
       loginForm: {
-        username: 'username',
-        password: 'password'
+        username: '',
+        password: ''
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -142,7 +122,11 @@ export default {
           })
             .then(response => {
               console.log('response:', response)
-              const { data } = response
+              const { data, code, msg } = response
+              this.$message({
+                type: code !== 0 ? 'error' : 'success',
+                message: msg
+              })
               return this.$store.dispatch('user/setToken', data.accesstoken)
             })
             .then(() => {
