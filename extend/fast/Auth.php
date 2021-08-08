@@ -85,7 +85,7 @@ class Auth
      * @param string|array $name     需要验证的规则列表,支持逗号分隔的权限规则或索引数组
      * @param int          $uid      认证用户的id
      * @param string       $relation 如果为 'or' 表示满足任一条规则即通过验证;如果为 'and'则表示需满足所有规则才能通过验证
-     * @param string       $mode     执行验证的模式,可分为url,normal
+     * @param string       $mode     执行验证的模式
      * @return bool 通过验证返回true;失败返回false
      */
     public function check($name, $uid, $relation = 'or', $mode = 'url')
@@ -162,7 +162,7 @@ class Auth
             ->alias('aga')
             ->join('__' . strtoupper($this->config['auth_group']) . '__ ag', 'aga.group_id = ag.id', 'LEFT')
             ->field('aga.uid,aga.group_id,ag.id,ag.pid,ag.name,ag.rules')
-            ->where("aga.uid='{$uid}' and ag.status='normal'")
+            ->where("aga.uid='{$uid}' and ag.status='1'")
             ->select();
         $groups[$uid] = $user_groups ?: [];
         return $groups[$uid];
@@ -192,7 +192,7 @@ class Auth
 
         // 筛选条件
         $where = [
-            'status' => 'normal',
+            'status' => '1',
         ];
         if (!in_array('*', $ids)) {
             $where['id'] = ['in', $ids];

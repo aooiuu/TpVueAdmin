@@ -168,7 +168,7 @@ class Auth extends \fast\Auth
             }
         }
         // 取出所有分组
-        $groupList = \app\common\model\AuthGroup::where(['status' => 'normal'])->select();
+        $groupList = \app\common\model\AuthGroup::where(['status' => '1'])->select();
         $objList = [];
         foreach ($groups as $k => $v) {
             if ($v['rules'] === '*') {
