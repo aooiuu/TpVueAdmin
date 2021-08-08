@@ -25,18 +25,18 @@
       <el-table-column prop="id" label="ID" align="center" width="60" />
       <el-table-column prop="pid" label="父级" align="center" width="80" />
       <el-table-column prop="name" label="角色组" align="center">
-        <p slot-scope="{row}" style="text-align: left;" v-html="((row.text + (row.text ? ' ' : '' ) + row.name)).replace(/ /g,'&nbsp;')" />
+        <p slot-scope="{ row }" style="text-align: left;" v-html="(row.text + (row.text ? ' ' : '') + row.name).replace(/ /g, '&nbsp;')" />
       </el-table-column>
       <el-table-column prop="status" label="状态" align="center" width="80">
-        <el-tag slot-scope="{row}" :type="row.status === 'normal' ? 'success' : 'danger'">
-          {{ row.status === 'normal' ? '正常' : '隐藏' }}
+        <el-tag slot-scope="{ row }" :type="row.status === 1 ? 'success' : 'danger'">
+          {{ row.status === 1 ? '正常' : '隐藏' }}
         </el-tag>
       </el-table-column>
       <!-- <el-table-column prop="rules" label="rules" align="center" /> -->
       <!-- 操作区域 -->
       <el-table-column label="操作" align="center" show-overflow-tooltip fixed="right" width="80">
-        <template slot-scope="{row}">
-          <el-button title="编辑" class="btn-mini" type="primary" size="mini" @click="(item = row) && (Edit.show = true)">
+        <template slot-scope="{ row }">
+          <el-button title="编辑" class="btn-mini" type="primary" size="mini" @click=";(item = row) && (Edit.show = true)">
             <svg-icon icon-class="pencil-alt-solid" />
           </el-button>
           <el-button title="删除" class="btn-mini" type="danger" size="mini" @click="del(row)">
@@ -100,7 +100,8 @@ export default {
             limit: this.table.limit,
             filter: this.table.filter,
             op: this.table.op
-          }})
+          }
+        })
         if (code !== 0) {
           this.$message({
             type: 'info',
@@ -127,7 +128,8 @@ export default {
             method: 'POST',
             data: {
               id: item.id
-            }})
+            }
+          })
           this.$message({
             type: code !== 0 ? 'error' : 'success',
             message: msg

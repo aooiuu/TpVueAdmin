@@ -3,13 +3,8 @@
     <el-form :model="form.data" label-position="left" label-width="70px" size="mini">
       <el-form-item label="用户组">
         <el-select v-model="form.data.group" multiple placeholder="请选择" style="width:100%;">
-          <el-option
-            v-for="options in form.group.options"
-            :key="options.value"
-            :value="options.value"
-            :label="options.label"
-          >
-            <span style="float: left" v-html="options.label.replace(/ /g,'&nbsp;')" />
+          <el-option v-for="options in form.group.options" :key="options.value" :value="options.value" :label="options.label">
+            <span style="float: left" v-html="options.label.replace(/ /g, '&nbsp;')" />
           </el-option>
         </el-select>
       </el-form-item>
@@ -23,7 +18,7 @@
         <el-input v-model="form.data.nickname" />
       </el-form-item>
       <el-form-item label="状态">
-        <el-switch v-model="form.data.status" active-value="normal" inactive-value="hidden" />
+        <el-switch v-model="form.data.status" :active-value="1" :inactive-value="0" />
       </el-form-item>
     </el-form>
     <!-- footer -->
@@ -60,7 +55,7 @@ export default {
           username: '',
           nickname: '',
           password: '',
-          status: 'normal',
+          status: 1,
           // 多个分组
           group: []
         },
@@ -72,7 +67,9 @@ export default {
   },
   computed: {
     showEx: {
-      get() { return this.show },
+      get() {
+        return this.show
+      },
       set(value) {
         this.$emit('hide')
       }
@@ -127,4 +124,3 @@ export default {
   }
 }
 </script>
-

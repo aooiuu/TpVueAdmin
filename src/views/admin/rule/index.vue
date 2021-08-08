@@ -27,12 +27,12 @@
       <!-- <el-button class="filter-item" type="primary" size="mini">
         <svg-icon icon-class="search-solid" />
         搜索
-      </el-button>
+      </el-button> -->
       <el-button class="filter-item" type="primary" size="mini" @click="Add.show = true">
         <svg-icon icon-class="plus-solid" />
         添加
       </el-button>
-      <el-button class="filter-item" type="primary" size="mini">
+      <!-- <el-button class="filter-item" type="primary" size="mini">
         <svg-icon icon-class="file-download-solid" />
         导出
       </el-button> -->

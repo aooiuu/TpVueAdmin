@@ -1,8 +1,23 @@
 <template>
   <div class="app-container">
     <!-- 弹窗 -->
-    <Add :show="Add.show" title="添加" @hide="Add.show = false; refresh()" />
-    <Edit :show="Edit.show" title="编辑" :item="item" @hide="Edit.show = false; refresh()" />
+    <Add
+      :show="Add.show"
+      title="添加"
+      @hide="
+        Add.show = false
+        refresh()
+      "
+    />
+    <Edit
+      :show="Edit.show"
+      title="编辑"
+      :item="item"
+      @hide="
+        Edit.show = false
+        refresh()
+      "
+    />
     <!-- 工具栏 -->
     <div class="filter-container">
       <el-button class="filter-item" size="mini" @click="refresh">刷新</el-button>
@@ -26,7 +41,7 @@
       <el-table-column prop="username" label="用户名" align="center" />
       <el-table-column prop="nickname" label="昵称" align="center" />
       <el-table-column prop="nickname" label="所属组别" align="center">
-        <template slot-scope="{row}">
+        <template slot-scope="{ row }">
           <el-tag
             v-for="authGroupAccess in row.auth_group_access"
             :key="authGroupAccess.group_id + '_' + authGroupAccess.uid"
@@ -38,13 +53,13 @@
         </template>
       </el-table-column>
       <el-table-column prop="status" label="状态" align="center">
-        <el-tag slot-scope="{row}" :type="row.status === 'normal' ? 'success' : 'danger'">
-          {{ row.status === 'normal' ? '正常' : '隐藏' }}
+        <el-tag slot-scope="{ row }" :type="row.status === 1 ? 'success' : 'danger'">
+          {{ row.status === 1 ? '正常' : '隐藏' }}
         </el-tag>
       </el-table-column>
       <!-- 操作区域 -->
       <el-table-column label="操作" align="center" show-overflow-tooltip fixed="right" width="100">
-        <template slot-scope="{row}">
+        <template slot-scope="{ row }">
           <el-button title="编辑" class="btn-mini" type="primary" size="mini" @click="edit(row)">
             <svg-icon icon-class="pencil-alt-solid" />
           </el-button>
@@ -106,7 +121,8 @@ export default {
             limit: this.table.limit,
             filter: this.table.filter,
             op: this.table.op
-          }})
+          }
+        })
         if (code !== 0) {
           this.$message({
             type: 'info',
@@ -138,7 +154,8 @@ export default {
             method: 'POST',
             data: {
               id: item.id
-            }})
+            }
+          })
           this.$message({
             type: code !== 0 ? 'error' : 'success',
             message: msg

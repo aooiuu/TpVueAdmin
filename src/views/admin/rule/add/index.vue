@@ -6,13 +6,8 @@
       </el-form-item>
       <el-form-item label="父级">
         <el-select v-model="form.data.pid" placeholder="请选择" style="width:100%;">
-          <el-option
-            v-for="options in form.pid.options"
-            :key="options.value"
-            :value="options.value"
-            :label="options.label"
-          >
-            <span style="float: left" v-html="options.label.replace(/ /g,'&nbsp;')" />
+          <el-option v-for="options in form.pid.options" :key="options.value" :value="options.value" :label="options.label">
+            <span style="float: left" v-html="options.label.replace(/ /g, '&nbsp;')" />
           </el-option>
         </el-select>
       </el-form-item>
@@ -27,10 +22,7 @@
           <svg-icon v-if="form.data.icon" :icon-class="form.data.icon" />
           <span v-else>无</span>
         </el-button>
-        <icons
-          :class="{icons: true, show: iconsShow}"
-          @handleClipboard="handleClipboard"
-        />
+        <icons :class="{ icons: true, show: iconsShow }" @handleClipboard="handleClipboard" />
       </el-form-item>
       <el-form-item label="权重">
         <el-input v-model="form.data.weigh" />
@@ -39,7 +31,7 @@
         <el-input v-model="form.data.remark" />
       </el-form-item>
       <el-form-item label="状态">
-        <el-switch v-model="form.data.status" active-value="normal" inactive-value="hidden" />
+        <el-switch v-model="form.data.status" :active-value="1" :inactive-value="0" />
       </el-form-item>
     </el-form>
     <!-- footer -->
@@ -86,7 +78,7 @@ export default {
           title: '',
           weigh: 0,
           icon: '',
-          status: 'normal',
+          status: 1,
           remark: '',
           type: 'menu',
           ismenu: 1
@@ -99,7 +91,9 @@ export default {
   },
   computed: {
     showEx: {
-      get() { return this.show },
+      get() {
+        return this.show
+      },
       set(value) {
         this.iconsShow = false
         this.$emit('hide')
@@ -112,18 +106,21 @@ export default {
         return
       }
       console.log('this.list:', this.list)
-      this.form.pid.options = buildRulePidTree(this.list.concat([{
-        id: 0,
-        pid: -1,
-        title: '无'
-      }])).map(e => {
+      this.form.pid.options = buildRulePidTree(
+        this.list.concat([
+          {
+            id: 0,
+            pid: -1,
+            title: '无'
+          }
+        ])
+      ).map(e => {
         e.label = e.text + e.label
         return e
       })
     }
   },
-  mounted() {
-  },
+  mounted() {},
   methods: {
     handleClipboard(item) {
       this.form.data.icon = item

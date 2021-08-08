@@ -1,15 +1,10 @@
 <template class="admin_add">
   <el-dialog :visible.sync="showEx" :title="title" :close-on-click-modal="false">
-    <el-form :model="form.data" label-position="left" label-width="70px" size="mini">
+    <el-form v-loading="loding" :model="form.data" label-position="left" label-width="70px" size="mini">
       <el-form-item label="用户组">
         <el-select v-model="form.data.group" multiple placeholder="请选择" style="width:100%;">
-          <el-option
-            v-for="options in form.group.options"
-            :key="options.value"
-            :value="options.value"
-            :label="options.label"
-          >
-            <span style="float: left" v-html="options.label.replace(/ /g,'&nbsp;')" />
+          <el-option v-for="options in form.group.options" :key="options.value" :value="options.value" :label="options.label">
+            <span style="float: left" v-html="options.label.replace(/ /g, '&nbsp;')" />
           </el-option>
         </el-select>
       </el-form-item>
@@ -23,7 +18,7 @@
         <el-input v-model="form.data.nickname" />
       </el-form-item>
       <el-form-item label="状态">
-        <el-switch v-model="form.data.status" active-value="normal" inactive-value="hidden" />
+        <el-switch v-model="form.data.status" :active-value="1" :inactive-value="0" />
       </el-form-item>
     </el-form>
     <!-- footer -->
@@ -58,6 +53,7 @@ export default {
   },
   data() {
     return {
+      loding: false,
       treeIsexpand: false,
       form: {
         data: {
@@ -65,7 +61,7 @@ export default {
           username: '',
           nickname: '',
           password: '',
-          status: 'normal',
+          status: 1,
           // 多个分组
           group: []
         },
@@ -77,7 +73,9 @@ export default {
   },
   computed: {
     showEx: {
-      get() { return this.show },
+      get() {
+        return this.show
+      },
       set(value) {
         this.$emit('hide')
       }
@@ -93,8 +91,7 @@ export default {
   },
   methods: {
     async initAuthGroupTree() {
-      console.log('item:')
-
+      this.loding = true
       const { code, msg, data } = await this.$request({
         url: 'admin/auth_group/index',
         method: 'POST',
@@ -107,17 +104,16 @@ export default {
         })
         return
       }
-      console.log({ code, msg, data })
       this.form.group.options = toTreeArr(toTree(data.rows)).map(e => ({
         label: e.text + ' ' + e.name,
         value: e.id
       }))
       this.form.data = Object.assign(this.form.data, filterObj(this.item, Object.keys(this.form.data)))
       this.form.data.group = this.item.auth_group_access.map(e => e.group_id)
-      console.table(JSON.parse(JSON.stringify(this.form.group.options)), ['label', 'value'])
+      this.loding = false
     },
     async save() {
-      console.table({ ...this.form.data })
+      this.loding = true
       try {
         const { code, msg } = await this.$request({
           url: 'admin/admin/edit',
@@ -131,8 +127,8 @@ export default {
       } catch (error) {
         console.warn(error)
       }
+      this.loding = false
     }
-
   }
 }
 </script>
