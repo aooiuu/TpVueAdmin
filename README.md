@@ -11,8 +11,8 @@
 
 ## 🎉 功能
 
-- 基于 Auth 权限管理系统
-- 前端动态可配置菜单
+- 基于 Auth 权限管理, 支持多角色、支持管理子级
+- 前端动态可配置菜单, 根据URL自动加载页面
 - 前端基于 vue-element-admin
 
 ## 🎈 预览
@@ -22,17 +22,16 @@
 ## 🛠 安装
 
 ```bash
-# clone 前端分支
-git clone -b thinkphp5.0 git@github.com:aooiuu/TpVueAdmin.git TpVueAdmin_PHP
+# clone php 分支
+git clone -b thinkphp5.0 git@github.com:aooiuu/TpVueAdmin.git TpVueAdminPHP
 
-cd TpVueAdmin_PHP
+cd TpVueAdminPHP
 
 # 安装依赖
 composer
 
-导入数据库: install.sql
+# 导入数据库
+php think migrate:run
 
-后台初始账号密码:
-admin
-123456
+# 后台初始账号密码: admin 123456
 ```
